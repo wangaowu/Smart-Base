@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?><!--color资源整理-->
+<resources>
+    <color name="app_common_blue">#0070F4</color>
+    <color name="app_common_bg_blue">#2F88FF</color>
+    <color name="app_common_bg_dark_blue">#0070F4</color>
+
+    <color name="light_gray_settings_sub_title">#F9F9F9</color>
+    <color name="settings_item_light_blue">#E6F7FF</color>
+    <color name="app_common_content_text_dark_333_color">#333333</color>
+    <color name="app_common_content_text_light_gray_color">#C3C3C3</color>
+    <color name="app_common_dark_red">#FF3333</color>
+    <color name="app_common_orange_highlight">#F47920</color>
+
+    <color name="app_common_transparent_black">#66000104</color>
+
+    <!--半透明白色-->
+    <color name="app_common_transparent_white">#60FFFFFF</color>
+    <color name="app_analyse_transparent_green">#3000FF00</color>
+    <color name="bg_im_item_green">#007947</color>
+
+    <!--线条颜色-->
+    <color name="gray_0_divider">#F9F9F9</color>
+    <color name="gray_1_divider">#DADADA</color>
+    <color name="gray_2_divider">#C1C1C1</color>
+
+    <!--按钮背景颜色-->
+    <color name="app_content_text_bg_pressed_color">#05000000</color>
+
+    <!--字体颜色-->
+    <color name="app_component_title_text_color">#333333</color>
+    <color name="app_content_text_gray_1_color">#333333</color>
+    <color name="app_content_text_gray_2_color">#D0CCCCCC</color>
+    <color name="app_content_text_blue_color">#0C75EA</color>
+    <color name="app_left_panel_blue_color">#0080fb</color>
+    <color name="app_left_panel_blue_indicator_color">#0058bc</color>
+
+    <!--背景颜色-->
+    <color name="app_common_bg_white">#FFFFFF</color>
+    <color name="app_common_status_bar_color">@color/app_common_bg_white</color>
+    <color name="app_common_sub_title_background_color">#EBEEF2</color>
+    <color name="app_common_focus_gray">#EEEEEE</color>
+    <color name="app_common_light_gray_2">#DADADA</color>
+    <color name="relation_tree_bg_color">#FDF5E6</color>
+    <color name="relation_tree_line_color">#979797</color>
+    <color name="white">@android:color/white</color>
+    <color name="black">@android:color/black</color>
+
+</resources>

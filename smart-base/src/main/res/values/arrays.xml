@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="spinner_count_of_page">
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+    </integer-array>
+</resources>

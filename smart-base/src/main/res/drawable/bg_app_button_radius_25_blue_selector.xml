@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--应用内的按钮圆角背景-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="@color/app_common_bg_dark_blue" />
+            <corners android:radius="@dimen/dpx_25" />
+        </shape>
+    </item>
+    <item android:state_window_focused="false">
+        <shape>
+            <solid android:color="@color/app_common_bg_blue" />
+            <corners android:radius="@dimen/dpx_25" />
+        </shape>
+    </item>
+</selector>

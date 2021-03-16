@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical|right"
+    android:orientation="horizontal">
+
+    <com.xuexiang.xui.widget.textview.label.LabelTextView
+        android:id="@+id/tv_page_info"
+        style="@style/common_text_gray_small_2"
+        android:text="第1到20条" />
+
+    <com.xuexiang.xui.widget.textview.label.LabelTextView
+        style="@style/common_text_gray_small_2"
+        android:text="/" />
+
+    <com.xuexiang.xui.widget.textview.label.LabelTextView
+        android:id="@+id/tv_total_info"
+        style="@style/common_text_gray_small_2"
+        android:text="总共100条" />
+
+    <com.xuexiang.xui.widget.textview.label.LabelTextView
+        android:id="@+id/tv_move_left"
+        style="@style/common_text_gray_small_2"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:text="@string/symbol_left" />
+
+    <LinearLayout
+        android:id="@+id/ll_pages_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
+
+    <com.xuexiang.xui.widget.textview.label.LabelTextView
+        android:id="@+id/tv_move_right"
+        style="@style/common_text_gray_small_2"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:text="@string/symbol_right" />
+
+    <com.xuexiang.xui.widget.textview.label.LabelTextView
+        android:id="@+id/tv_count_of_page"
+        style="@style/common_text_gray_small_2"
+        android:background="@drawable/bg_gray_roundrect_2_dp_stroke"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_5"
+        android:paddingBottom="@dimen/dp_2"
+        android:text="20条/页" />
+
+</LinearLayout>

@@ -1,0 +1,4 @@
+<resources>
+    <item name="cell_content" type="id"/>
+    <item name="cell_tag" type="id"/>
+</resources>

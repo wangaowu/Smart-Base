@@ -1,0 +1,88 @@
+<resources>
+    <string name="app_name">智能分析</string>
+    <string name="app_browser_name">通用浏览器</string>
+
+    <!--特殊符号 start-->
+    <string name="ic_block">&#xe01a;</string>
+    <string name="ic_email">&#xe087;</string>
+    <string name="ic_keyboard_arrow_down">&#xe0c5;</string>
+    <string name="ic_keyboard_arrow_right">&#xe0c7;</string>
+    <string name="ic_map">&#xe0e2;</string>
+    <string name="ic_person">&#xe105;</string>
+    <!--特殊符号 end-->
+
+    <string name="lab_yes">是</string>
+    <string name="lab_no">否</string>
+    <string name="lab_open_third_app">是否允许页面打开第三方应用?</string>
+    <string name="select_coordinates_file_dialog">导入文件支持txt、shp和kml格式</string>
+
+    <!-- 隐私政策弹窗   -->
+    <string name="lab_exit_app">退出应用</string>
+    <string name="lab_agree">同意</string>
+    <string name="lab_disagree">不同意</string>
+    <string name="lab_look_again">再次查看</string>
+    <string name="lab_still_disagree">仍不同意</string>
+    <string name="title_reminder">温馨提示</string>
+    <string name="content_think_about_it_again">要不要再想想</string>
+    <string name="content_privacy_explain_again">我们非常重视对你个人信息的保护，承诺严格按照《%s隐私权政策》保护及处理你的信息。如果你不同意该政策，很遗憾我们将无法为你提供服务</string>
+    <string name="lab_privacy_name">《%s隐私权政策》</string>
+
+    <!--下拉刷新-->
+
+    <string name="lab_choice">选择</string>
+    <string name="lab_cancel">取消</string>
+
+    <!--    按钮名称-->
+    <string name="inputLon">经度：</string>
+    <string name="inputLat">纬度：</string>
+
+    <!--设置界面-->
+    <string name="text_setting_version_update">系统升级</string>
+    <string name="text_setting_data_update">数据更新</string>
+    <string name="text_setting_app_guide">系统说明</string>
+    <string name="text_setting_settings">系统设置</string>
+    <string name="text_setting_support">技术支持</string>
+    <string name="text_setting_support2">技术支持:</string>
+    <string name="text_setting_account">账号信息</string>
+    <string name="text_setting_feedback">意见反馈</string>
+    <string name="setting_sub_setting_style">风格选择</string>
+
+    <!--个人信息-->
+    <string name="text_setting_personal_info">个人信息</string>
+    <string name="text_setting_personal_history">个人履历</string>
+    <string name="text_setting_liu_ping">刘&#160;&#160;&#160;&#160;平</string>
+
+    <!--数据更新-->
+    <string name="demo">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;自然资源智能分析系统是针对自然资源行业业务开发的一款移动办公产品，系统主要包含两大子系统：数据分析展示系统、消息推送系统，数据分析展示系统是对当前最新自然资源 “一张图”数据进行展示分析，数据包括三调数据、规划数据、现状数据、管理数据等，在数据基础上进行数据查询、分析与统计；消息推送系统包括行业信息订阅展示、汇报报告下载、及时消息传输功能。后续即将部署上线通讯录、即时通讯、智能语音分析、行程管理、会议管理、行业动态和政策分享等，其他业务系统对接等功能。</string>
+    <string name="setting_account_change_password">修改密码</string>
+    <string name="data_update_polygon_name">图斑名称</string>
+    <string name="data_update_time">更新时间</string>
+    <string name="data_update_file_size">文件大小</string>
+    <string name="data_update_operate">操作</string>
+    <string name="data_update_download">下载</string>
+
+    <!--问题描述-->
+    <string name="text_please_check_point_of_problem">请选择将要反馈的问题点:</string>
+    <string name="text_please_input_detail">详细意见或问题:</string>
+    <string name="please_commit_detail_picture">请提供相关问题的截图或者照片:</string>
+    <string name="text_contact_method">联系方式:</string>
+    <string name="text_commit">提交</string>
+
+    <!--地图页面-->
+    <string name="text_geometry_longitude_info">经度:%1$s</string>
+    <string name="text_geometry_latitude_info">纬度:%1$s</string>
+    <string name="text_geometry_altitude_info">高度:%1$s</string>
+    <string name="text_plane_coordinates">平面坐标</string>
+    <string name="text_lat_lng_coordinates">经纬度</string>
+    <string name="text_generate_layer">坐标成图</string>
+
+    <!--录制音频错误提示-->
+    <string name="error_no_sdcard">没有存储卡</string>
+    <string name="error_state_record">状态错误</string>
+    <string name="error_unknown">未知错误</string>
+
+    <string name="tianditu_tk">abe31c11863ba46e8937cf056569f702</string>
+    <string name="tip_infos">提示</string>
+    <string name="content_simple_confirm_dialog">请重新绘制，单击绘制，双击结束！</string>
+    <string name="lab_submit">确定</string>
+</resources>

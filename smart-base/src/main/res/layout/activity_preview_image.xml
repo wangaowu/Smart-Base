@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.bytemiracle.base.framework.view.ShadowLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_page"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.xuexiang.xui.widget.imageview.photoview.PhotoView
+        android:id="@+id/iv_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</com.bytemiracle.base.framework.view.ShadowLinearLayout>

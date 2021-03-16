@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="search_view">
+        <attr name="special_height" format="reference" />
+        <attr name="visible_clear" format="boolean" />
+        <attr name="visible_poplist" format="boolean" />
+        <attr name="hint_text" format="string" />
+    </declare-styleable>
+</resources>

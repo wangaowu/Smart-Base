@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:height="@dimen/dp_1"
+        android:gravity="bottom">
+        <shape>
+            <solid
+                android:color="@color/green_btn_color_disable"/>
+        </shape>
+    </item>
+</layer-list>

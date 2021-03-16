@@ -1,0 +1,87 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
+//自动添加X-Library依赖
+apply from: '../x-library.gradle'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId rootProject.ext.applicationId
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+
+        externalNativeBuild {
+            cmake {
+                abiFilters "arm64-v8a" //"armeabi-v7a"
+            }
+        }
+        packagingOptions {
+            exclude 'com/itextpdf/text/pdf/fonts/cmap_info.txt'
+        }
+    }
+
+    signingConfigs {
+        release {
+            keyAlias 'wuding1234'
+            keyPassword 'wuding1234'
+            storePassword 'wuding1234'
+            storeFile file('D:/SDK/app.jks')
+        }
+    }
+    buildTypes {
+        release {
+            debuggable true
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+        }
+    }
+
+    /**
+     * 生成包规则，使用闭包
+     */
+    applicationVariants.all {
+        outputs.each { output ->
+            def apkName = "assistant_v${it.versionName}_${it.buildType.name}_${generateTime()}.apk"
+            if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
+                output.outputFileName = apkName
+            }
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+def generateTime() {
+    return new Date().format("MMdd_HHmm", TimeZone.getTimeZone("GMT+08:00"))
+}
+
+dependencies {
+    //依赖base
+    api 'com.bytemiracle.base:smart-base:1.0.1'
+}
+
+

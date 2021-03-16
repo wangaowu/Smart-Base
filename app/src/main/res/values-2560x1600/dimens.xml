@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resources>
+    <dimen name="list_divider_height_negative">-1px</dimen>
+    <dimen name="dp_1">0.8889dp</dimen>
+    <dimen name="dp_2">1.7778dp</dimen>
+    <dimen name="dp_3">2.6667dp</dimen>
+    <dimen name="dp_4">3.5556dp</dimen>
+    <dimen name="dp_5">4.4444dp</dimen>
+    <dimen name="dp_6">5.3333dp</dimen>
+    <dimen name="dp_7">6.2222dp</dimen>
+    <dimen name="dp_8">7.1111dp</dimen>
+    <dimen name="dp_10">8.8889dp</dimen>
+    <dimen name="dp_15">13.3333dp</dimen>
+    <dimen name="dp_16">14.2222dp</dimen>
+    <dimen name="dp_18">16.0000dp</dimen>
+    <dimen name="dp_20">17.7778dp</dimen>
+    <dimen name="dp_23">20.4444dp</dimen>
+    <dimen name="dp_24">21.3333dp</dimen>
+    <dimen name="dp_30">26.6667dp</dimen>
+    <dimen name="dp_32">28.4444dp</dimen>
+    <dimen name="dp_40">35.5556dp</dimen>
+    <dimen name="dp_42">37.3333dp</dimen>
+    <dimen name="dp_48">42.6667dp</dimen>
+    <dimen name="dp_50">44.4444dp</dimen>
+    <dimen name="dp_55">48.8889dp</dimen>
+    <dimen name="dp_60">53.3333dp</dimen>
+    <dimen name="dp_70">62.2222dp</dimen>
+    <dimen name="dp_100">88.8889dp</dimen>
+    <dimen name="dp_300">266.6667dp</dimen>
+    <dimen name="dp_350">311.1111dp</dimen>
+    <dimen name="dp_zero">0.0000dp</dimen>
+    <dimen name="dp_1200">1066.6667dp</dimen>
+    <dimen name="dp_225">200.0000dp</dimen>
+    <dimen name="dp_500">444.4444dp</dimen>
+    <dimen name="sp_10">8.8889sp</dimen>
+    <dimen name="sp_12">10.6667sp</dimen>
+    <dimen name="sp_14">12.4444sp</dimen>
+    <dimen name="sp_16">14.2222sp</dimen>
+
+    <!--    修改XUI默认字体大小-->
+    <dimen name="xui_tab_segment_text_size">@dimen/spx_12</dimen>
+    <dimen name="default_md_listitem_textsize_tablet_big">@dimen/spx_12</dimen>
+    <dimen name="default_md_listitem_textsize_tablet_small">@dimen/spx_12</dimen>
+    <dimen name="default_md_listitem_textsize_phone">@dimen/spx_12</dimen>
+
+    <dimen name="xui_config_size_spinner_text_tablet_big">@dimen/spx_12</dimen>
+    <dimen name="xui_config_size_spinner_text_tablet_small">@dimen/spx_12</dimen>
+    <dimen name="xui_config_size_spinner_text_phone">@dimen/spx_12</dimen>
+</resources>

@@ -1,0 +1,33 @@
+ext {
+    compileSdkVersion = 28
+    buildToolsVersion = '28.0.3'
+    applicationId = "com.bytemiracle.project"
+    minSdkVersion = 26
+    targetSdkVersion = 28
+    versionCode = 5
+    versionName = "1.1.5"
+}
+
+buildscript {
+    apply from: './repositories.gradle'
+    //增加代码仓库
+    addRepos(repositories)
+    dependencies {
+        //不能新版是因为xaop的依赖原因
+        classpath 'com.android.tools.build:gradle:3.6.1'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.3'
+        classpath 'com.github.xuexiangjys.XAOP:xaop-plugin:1.1.0'
+
+        //Android ORM Greendao
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
+    }
+}
+
+allprojects {
+    addRepos(repositories)
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+

@@ -1,0 +1,12 @@
+apply plugin: 'maven'
+
+//生成仓库的任务
+uploadArchives {
+    repositories.mavenDeployer {
+        // 配置本地仓库路径repository目录
+        repository(url: uri('D:/localMaven/repository'))
+        pom.groupId = "com.bytemiracle.base"
+        pom.artifactId = "smart-base"
+        pom.version = "1.0.2"
+    }
+}

@@ -1,0 +1,650 @@
+Index: app/src/main/java/com/bytemiracle/project/mindsemanteme/AddAudioTypeDialog.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.project.mindsemanteme;\r\n\r\nimport android.text.TextUtils;\r\nimport android.util.DisplayMetrics;\r\nimport android.view.Gravity;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.Window;\r\nimport android.view.WindowManager;\r\nimport android.widget.EditText;\r\nimport android.widget.ImageView;\r\n\r\nimport com.bytemiracle.base.framework.GlobalInstanceHolder;\r\nimport com.bytemiracle.base.framework.component.BaseActivity;\r\nimport com.bytemiracle.base.framework.utils.BitmapWrapper;\r\nimport com.bytemiracle.base.framework.utils.DateFormatUtil;\r\nimport com.bytemiracle.base.framework.utils.XToastUtils;\r\nimport com.bytemiracle.base.framework.view.BaseCheckPojo;\r\nimport com.bytemiracle.base.framework.view.selectcolor.ColorSelector;\r\nimport com.bytemiracle.greendao.DaoSession;\r\nimport com.bytemiracle.greendao.SysZnyyTypeDao;\r\nimport com.bytemiracle.project.R;\r\nimport com.bytemiracle.project.common.db.GreenDaoManager;\r\nimport com.bytemiracle.project.mindsemanteme.bean.SysZnyyType;\r\nimport com.xuexiang.xui.widget.button.roundbutton.RoundButton;\r\nimport com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.Date;\r\nimport java.util.List;\r\n\r\npublic class AddAudioTypeDialog implements View.OnClickListener {\r\n    private static AddAudioTypeDialog audioTypeDialog;\r\n\r\n    private SysZnyyTypeDao sysZnyyTypeDao;\r\n\r\n    MaterialDialog dialog;\r\n\r\n    private View view;\r\n\r\n    private static ImageView tag;\r\n\r\n    private EditText editText;\r\n\r\n    private ColorSelector colorSelector;\r\n\r\n    List<ColorSelector.ColorItemData> colorItemDataList;\r\n    private BaseActivity attachActivity;\r\n\r\n    private AddAudioTypeDialog(BaseActivity attachActivity) {\r\n        this.attachActivity = attachActivity;\r\n    }\r\n\r\n    public static AddAudioTypeDialog getInstance(BaseActivity attachActivity) {\r\n        audioTypeDialog = new AddAudioTypeDialog(attachActivity);\r\n        return audioTypeDialog;\r\n    }\r\n\r\n    public void createAudioType() {\r\n        LayoutInflater mInflater = LayoutInflater.from(GlobalInstanceHolder.applicationContext());\r\n        view = mInflater.inflate(R.layout.dialog_add_audio_type, null);\r\n        tag = view.findViewById(R.id.tag);\r\n        editText = view.findViewById(R.id.tag_name);\r\n        RoundButton save = view.findViewById(R.id.save);\r\n        RoundButton cancel = view.findViewById(R.id.cancel);\r\n        save.setOnClickListener(this);\r\n        cancel.setOnClickListener(this);\r\n        colorSelector = view.findViewById(R.id.selectColorTag);\r\n        colorItemDataList = new ArrayList<>();\r\n        colorItemDataList.add(new ColorSelector.ColorItemData(GlobalInstanceHolder.applicationContext().getColor(R.color.audio_tag_red)));\r\n        colorItemDataList.add(new ColorSelector.ColorItemData(GlobalInstanceHolder.applicationContext().getColor(R.color.audio_tag_yello2)));\r\n        colorItemDataList.add(new ColorSelector.ColorItemData(GlobalInstanceHolder.applicationContext().getColor(R.color.audio_tag_yello)));\r\n        colorItemDataList.add(new ColorSelector.ColorItemData(GlobalInstanceHolder.applicationContext().getColor(R.color.audio_tag_green2)));\r\n        colorItemDataList.add(new ColorSelector.ColorItemData(GlobalInstanceHolder.applicationContext().getColor(R.color.audio_tag_blue2)));\r\n        colorItemDataList.add(new ColorSelector.ColorItemData(GlobalInstanceHolder.applicationContext().getColor(R.color.audio_tag_blue3)));\r\n        colorItemDataList.add(new ColorSelector.ColorItemData(GlobalInstanceHolder.applicationContext().getColor(R.color.audio_tag_purple)));\r\n        colorItemDataList.add(new ColorSelector.ColorItemData(GlobalInstanceHolder.applicationContext().getColor(R.color.audio_tag_blue)));\r\n        colorSelector.init(colorItemDataList, new ColorSelector.OnColorSelectedListener() {\r\n            @Override\r\n            public void onSelected(ColorSelector.ColorItemData colorItemData) {\r\n                BitmapWrapper.quickApply(tag, R.drawable.tag, colorItemData.colorValue);\r\n                colorItemData.setChecked(true);\r\n            }\r\n        });\r\n\r\n        DaoSession daoSession = GreenDaoManager.getInstance().getDaoSession();\r\n        sysZnyyTypeDao = daoSession.getSysZnyyTypeDao();\r\n\r\n        dialog = new MaterialDialog.Builder(attachActivity)\r\n                .customView(view, true)\r\n                .title(\"新建笔记类型\")\r\n                .show();\r\n        dialog.setCanceledOnTouchOutside(false);\r\n        Window window = dialog.getWindow();\r\n        if (window != null) {\r\n            // 一定要设置Background，如果不设置，window属性设置无效\r\n            DisplayMetrics dm = new DisplayMetrics();\r\n            if (GlobalInstanceHolder.rootActivity() != null) {\r\n                WindowManager windowManager = attachActivity.getWindowManager();\r\n                if (windowManager != null) {\r\n                    windowManager.getDefaultDisplay().getMetrics(dm);\r\n                    window.setLayout((int) (dm.widthPixels * 0.99), (int) (dm.heightPixels * 0.3));\r\n                    WindowManager.LayoutParams params = window.getAttributes();\r\n                    params.gravity = Gravity.BOTTOM;\r\n                    window.setAttributes(params);\r\n                }\r\n            }\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public void onClick(View v) {\r\n        switch (v.getId()) {\r\n            case R.id.save:\r\n                String name = editText.getText().toString().trim();\r\n                if (TextUtils.isEmpty(name) || name.contains(\"新建\")) {\r\n                    XToastUtils.info(\"分类名称不能为空!\");\r\n                    return;\r\n                }\r\n                saveAudioType(name);\r\n                dialog.dismiss();\r\n                break;\r\n            case R.id.cancel:\r\n                dialog.dismiss();\r\n                break;\r\n        }\r\n    }\r\n\r\n    private void saveAudioType(String name) {\r\n        SysZnyyType sysZnyyType = new SysZnyyType();\r\n        sysZnyyType.setName(name);\r\n        ColorSelector.ColorItemData checkedItem = (ColorSelector.ColorItemData) BaseCheckPojo.getSingleCheckedItem(colorSelector.getColorItemDataList());\r\n        Integer colorValue = null;\r\n        if (checkedItem == null) {\r\n            colorValue = GlobalInstanceHolder.applicationContext().getColor(R.color.app_common_transparent_black);\r\n        } else {\r\n            colorValue = checkedItem.colorValue;\r\n        }\r\n        sysZnyyType.setCssColor(colorValue);\r\n        sysZnyyType.setCreateTime(DateFormatUtil.dateConverString(new Date()));\r\n        sysZnyyTypeDao.save(sysZnyyType);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bytemiracle/project/mindsemanteme/AddAudioTypeDialog.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/java/com/bytemiracle/project/mindsemanteme/AddAudioTypeDialog.java	(date 1615353209551)
+@@ -25,6 +25,7 @@
+ import com.xuexiang.xui.widget.button.roundbutton.RoundButton;
+ import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog;
+ 
++import java.lang.ref.WeakReference;
+ import java.util.ArrayList;
+ import java.util.Date;
+ import java.util.List;
+@@ -45,10 +46,10 @@
+     private ColorSelector colorSelector;
+ 
+     List<ColorSelector.ColorItemData> colorItemDataList;
+-    private BaseActivity attachActivity;
++    private WeakReference<BaseActivity> attachActivity;
+ 
+     private AddAudioTypeDialog(BaseActivity attachActivity) {
+-        this.attachActivity = attachActivity;
++        this.attachActivity = new WeakReference<>(attachActivity);
+     }
+ 
+     public static AddAudioTypeDialog getInstance(BaseActivity attachActivity) {
+@@ -86,7 +87,7 @@
+         DaoSession daoSession = GreenDaoManager.getInstance().getDaoSession();
+         sysZnyyTypeDao = daoSession.getSysZnyyTypeDao();
+ 
+-        dialog = new MaterialDialog.Builder(attachActivity)
++        dialog = new MaterialDialog.Builder(attachActivity.get())
+                 .customView(view, true)
+                 .title("新建笔记类型")
+                 .show();
+@@ -96,7 +97,7 @@
+             // 一定要设置Background，如果不设置，window属性设置无效
+             DisplayMetrics dm = new DisplayMetrics();
+             if (GlobalInstanceHolder.rootActivity() != null) {
+-                WindowManager windowManager = attachActivity.getWindowManager();
++                WindowManager windowManager = attachActivity.get().getWindowManager();
+                 if (windowManager != null) {
+                     windowManager.getDefaultDisplay().getMetrics(dm);
+                     window.setLayout((int) (dm.widthPixels * 0.99), (int) (dm.heightPixels * 0.3));
+Index: app/src/main/res/drawable/bg_cell_layout_orange_radius_10.xml
+===================================================================
+--- app/src/main/res/drawable/bg_cell_layout_orange_radius_10.xml	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/res/drawable/bg_cell_layout_orange_radius_10.xml	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
+@@ -1,9 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<shape xmlns:android="http://schemas.android.com/apk/res/android"
+-    android:shape="rectangle">
+-    <stroke
+-        android:width="@dimen/dpx_5"
+-        android:color="@color/app_common_bg_white" />
+-    <solid android:color="@color/app_common_orange_highlight" />
+-    <corners android:radius="@dimen/dpx_10" />
+-</shape>
+\ No newline at end of file
+Index: app/src/main/res/drawable/bg_cell_layout_green_radius_10.xml
+===================================================================
+--- app/src/main/res/drawable/bg_cell_layout_green_radius_10.xml	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/res/drawable/bg_cell_layout_green_radius_10.xml	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
+@@ -1,9 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<shape xmlns:android="http://schemas.android.com/apk/res/android"
+-    android:shape="rectangle">
+-    <stroke
+-        android:width="@dimen/dpx_5"
+-        android:color="@color/app_common_bg_white" />
+-    <solid android:color="@color/bg_im_item_green" />
+-    <corners android:radius="@dimen/dpx_10" />
+-</shape>
+\ No newline at end of file
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    package=\"com.bytemiracle.project\">\r\n\r\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\r\n    <!--定位信息是敏感信息，可通过Setting.setLocationEnable(false)关闭定位请求 -->\r\n    <uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />\r\n    <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\r\n    <uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\r\n    <uses-permission android:name=\"android.permission.CAMERA\" />\r\n    <uses-permission\r\n        android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"\r\n        tools:ignore=\"ProtectedPermissions\" />\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n    <uses-permission\r\n        android:name=\"android.permission.WRITE_SETTINGS\"\r\n        tools:ignore=\"ProtectedPermissions\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" />\r\n    <uses-permission\r\n        android:name=\"android.permission.WRITE_MEDIA_STORAGE\"\r\n        tools:ignore=\"ProtectedPermissions\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\r\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\r\n    <uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\" />\r\n    <uses-permission android:name=\"android.permission.VIBRATE\" />\r\n    <uses-permission android:name=\"android.permission.READ_PHONE_STATE\" />\r\n    <uses-permission android:name=\"android.permission.BLUETOOTH\" /> <!-- 进程杀死 -->\r\n    <uses-permission android:name=\"android.permission.KILL_BACKGROUND_PROCESSES\" />\r\n    <uses-permission android:name=\"android.permission.CALL_PHONE\" />\r\n\r\n    <application\r\n        android:name=\".AssistantApplication\"\r\n        android:allowBackup=\"false\"\r\n        android:icon=\"@mipmap/icon_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:networkSecurityConfig=\"@xml/network_security_config_android_p\"\r\n        android:roundIcon=\"@mipmap/icon_launcher\"\r\n        android:theme=\"@style/AppTheme\"\r\n        tools:ignore=\"LockedOrientationActivity\"\r\n        tools:replace=\"android:allowBackup,android:roundIcon,android:icon\">\r\n\r\n        <activity\r\n            android:name=\".splash.SplashActivity\"\r\n            android:configChanges=\"screenSize|keyboardHidden|orientation|keyboard\"\r\n            android:screenOrientation=\"landscape\"\r\n            android:theme=\"@style/AppTheme.Launch\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n        <activity\r\n            android:name=\".login.LoginActivity\"\r\n            android:configChanges=\"screenSize|keyboardHidden|orientation|keyboard\"\r\n            android:launchMode=\"singleInstance\"\r\n            android:screenOrientation=\"landscape\"\r\n            android:windowSoftInputMode=\"adjustPan|stateHidden\" />\r\n        <activity\r\n            android:name=\".main.MainActivity\"\r\n            android:configChanges=\"screenSize|keyboardHidden|orientation|keyboard\"\r\n            android:screenOrientation=\"landscape\"\r\n            android:theme=\"@style/MapActivityTheme\"\r\n            android:windowSoftInputMode=\"adjustPan|stateHidden\" />\r\n        <activity\r\n            android:name=\".contacts.ContactsActivity\"\r\n            android:configChanges=\"screenSize|keyboardHidden|orientation|keyboard\"\r\n            android:screenOrientation=\"landscape\"\r\n            android:windowSoftInputMode=\"adjustPan|stateHidden\" />\r\n        <activity\r\n            android:name=\".policyMessage.PolicyMessageActivity\"\r\n            android:configChanges=\"screenSize|keyboardHidden|orientation|keyboard\"\r\n            android:screenOrientation=\"landscape\"\r\n            android:windowSoftInputMode=\"adjustPan|stateHidden\" />\r\n        <activity\r\n            android:name=\".mindsemanteme.MindSemantemeActivity\"\r\n            android:configChanges=\"screenSize|keyboardHidden|orientation|keyboard\"\r\n            android:screenOrientation=\"landscape\"\r\n            android:windowSoftInputMode=\"adjustPan|stateHidden\" />\r\n        <activity\r\n            android:name=\".settings.SettingsActivity\"\r\n            android:configChanges=\"screenSize|keyboardHidden|orientation|keyboard\"\r\n            android:screenOrientation=\"landscape\"\r\n            android:windowSoftInputMode=\"adjustPan|stateHidden\" />\r\n        <!-- applink的中转页面 -->\r\n        <provider\r\n            android:name=\"androidx.core.content.FileProvider\"\r\n            android:authorities=\"com.bytemiracle.project.fileprovider\"\r\n            android:exported=\"false\"\r\n            android:grantUriPermissions=\"true\">\r\n            <meta-data\r\n                android:name=\"android.support.FILE_PROVIDER_PATHS\"\r\n                android:resource=\"@xml/file_paths\" />\r\n        </provider>\r\n        <!-- 应用监听服务 -->\r\n        <service android:name=\".policyMessage.service.MsgMonitorService\" />\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/AndroidManifest.xml	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/AndroidManifest.xml	(date 1615354497297)
+@@ -94,7 +94,7 @@
+                 android:resource="@xml/file_paths" />
+         </provider>
+         <!-- 应用监听服务 -->
+-        <service android:name=".policyMessage.service.MsgMonitorService" />
++        <service android:name=".policyMessage.service.ReceiveMQService" />
+     </application>
+ 
+ </manifest>
+\ No newline at end of file
+Index: smart-base/src/main/res/values-2560x1600/dimens.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<resources>\r\n    <dimen name=\"list_divider_height_negative\">-1px</dimen>\r\n    <dimen name=\"dp_common_item_height\">@dimen/dpx_30</dimen>\r\n    <dimen name=\"dp_common_item_width\">80.0000dp</dimen>\r\n\r\n    <dimen name=\"default_width_use_weight\">0.0000dp</dimen>\r\n\r\n    <dimen name=\"settings_sub_account_item_min_height\">31.1111dp</dimen>\r\n    <dimen name=\"text_size_app_common_content\">12.4444sp</dimen>\r\n    <dimen name=\"text_size_app_common_indicator\">10sp</dimen>\r\n    <dimen name=\"text_size_back_bold_1\">22sp</dimen>\r\n    <dimen name=\"text_size_back_bold_2\">16sp</dimen>\r\n    <dimen name=\"text_size_back_bold_3\">12sp</dimen>\r\n    <dimen name=\"pad_content_horizontal_padding\">62.2222dp</dimen>\r\n    <dimen name=\"pad_content_vertical_padding\">26.6667dp</dimen>\r\n    <dimen name=\"pad_input_multi_line_height\">68.8889dp</dimen>\r\n\r\n    <dimen name=\"item_setting_update_min_height\">40.0000dp</dimen>\r\n    <dimen name=\"dpx_370\">370dp</dimen>\r\n    <dimen name=\"dpx_230\">230dp</dimen>\r\n    <dimen name=\"dpx_260\">260dp</dimen>\r\n    <dimen name=\"dpx_3\">3dp</dimen>\r\n    <dimen name=\"dpx_8\">8dp</dimen>\r\n    <dimen name=\"dpx_40\">40dp</dimen>\r\n    <dimen name=\"dpx_90\">90dp</dimen>\r\n    <dimen name=\"dpx_180\">180dp</dimen>\r\n    <dimen name=\"dpx_48\">48dp</dimen>\r\n    <dimen name=\"dpx_96\">96dp</dimen>\r\n    <dimen name=\"dpx_28\">28dp</dimen>\r\n    <dimen name=\"dpx_85\">85dp</dimen>\r\n    <dimen name=\"dpx_15\">15dp</dimen>\r\n    <dimen name=\"dpx_20\">20dp</dimen>\r\n    <dimen name=\"dpx_21\">21dp</dimen>\r\n    <dimen name=\"dpx_24\">24dp</dimen>\r\n    <dimen name=\"dpx_36\">36dp</dimen>\r\n    <dimen name=\"dpx_25\">25dp</dimen>\r\n    <dimen name=\"dpx_zero\">0dp</dimen>\r\n    <dimen name=\"dpx_5\">5dp</dimen>\r\n    <dimen name=\"dpx_app_login_page_center_logo_top_margin\">80dp</dimen>\r\n    <dimen name=\"dpx_app_main_page_center_logo_top_margin\">50dp</dimen>\r\n    <dimen name=\"dpx_60\">60dp</dimen>\r\n    <dimen name=\"dpx_im_item_min_height\">60dp</dimen>\r\n    <dimen name=\"dpx_im_item_max_width\">350dp</dimen>\r\n    <dimen name=\"dpx_im_item_medium_width\">170dp</dimen>\r\n    <dimen name=\"dpx_im_item_image_max_width\">120dp</dimen>\r\n    <dimen name=\"dpx_im_avatar_size\">40dp</dimen>\r\n    <dimen name=\"dpx_app_main_page_center_logo_width\">330dp</dimen>\r\n    <dimen name=\"dpx_app_main_page_center_logo_height\">71dp</dimen>\r\n\r\n    <dimen name=\"spx_14\">14sp</dimen>\r\n    <dimen name=\"spx_12\">12sp</dimen>\r\n    <dimen name=\"spx_9\">9sp</dimen>\r\n    <dimen name=\"spx_16\">16sp</dimen>\r\n    <dimen name=\"spx_20\">20sp</dimen>\r\n    <dimen name=\"dpx_12\">12dp</dimen>\r\n    <dimen name=\"dpx_10\">10dp</dimen>\r\n    <dimen name=\"dpx_18\">18dp</dimen>\r\n    <dimen name=\"dpx_shadow_height\">10dp</dimen>\r\n    <dimen name=\"dpx_220\">220dp</dimen>\r\n    <dimen name=\"dpx_pad_content_vertical_padding\">@dimen/dpx_60</dimen>\r\n    <dimen name=\"dpx_left_panel_item_height\">65dp</dimen>\r\n    <dimen name=\"dpx_sub_left_item_height\">55dp</dimen>\r\n    <dimen name=\"dpx_32\">32dp</dimen>\r\n    <dimen name=\"dpx_minus_32\">-32dp</dimen>\r\n    <dimen name=\"dpx_55\">55dp</dimen>\r\n    <dimen name=\"dpx_50\">50dp</dimen>\r\n    <dimen name=\"dpx_left_0_panel_width\">65dp</dimen>\r\n    <dimen name=\"dpx_settings_sub_title_height\">90dp</dimen>\r\n    <dimen name=\"dpx_settings_sub_title_hor_padding\">20dp</dimen>\r\n    <dimen name=\"dpx_120\">120dp</dimen>\r\n    <dimen name=\"dpx_160\">160dp</dimen>\r\n    <dimen name=\"dpx_200\">200dp</dimen>\r\n    <dimen name=\"dpx_630\">630dp</dimen>\r\n    <dimen name=\"dpx_30\">30dp</dimen>\r\n    <dimen name=\"dpx_35\">35dp</dimen>\r\n    <dimen name=\"dpx_80\">80dp</dimen>\r\n    <dimen name=\"dpx_100\">100dp</dimen>\r\n    <dimen name=\"dpx_45\">45dp</dimen>\r\n    <dimen name=\"dpx_75\">75dp</dimen>\r\n    <dimen name=\"divider_1dp_weight\">0.5dp</dimen>\r\n    <dimen name=\"divider_1dp\">1dp</dimen>\r\n    <dimen name=\"divider_1px_weight\">1px</dimen>\r\n    <dimen name=\"divider_2dp_weight\">2dp</dimen>\r\n    <dimen name=\"dpx_250\">250dp</dimen>\r\n    <dimen name=\"dpx_280\">280dp</dimen>\r\n</resources>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- smart-base/src/main/res/values-2560x1600/dimens.xml	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ smart-base/src/main/res/values-2560x1600/dimens.xml	(date 1615359615096)
+@@ -53,6 +53,7 @@
+     <dimen name="spx_12">12sp</dimen>
+     <dimen name="spx_9">9sp</dimen>
+     <dimen name="spx_16">16sp</dimen>
++    <dimen name="spx_18">18sp</dimen>
+     <dimen name="spx_20">20sp</dimen>
+     <dimen name="dpx_12">12dp</dimen>
+     <dimen name="dpx_10">10dp</dimen>
+Index: app/src/main/java/com/bytemiracle/project/contacts/controller/RelationTreePresenter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.project.contacts.controller;\r\n\r\nimport com.bytemiracle.base.framework.utils.ListUtils;\r\nimport com.bytemiracle.base.framework.view.relationTree.CellRect;\r\nimport com.bytemiracle.project.R;\r\nimport com.bytemiracle.project.contacts.bean.OrgDeptEntity;\r\nimport com.bytemiracle.project.contacts.bean.OrgUserEntity;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.HashSet;\r\nimport java.util.List;\r\nimport java.util.Set;\r\n\r\n\r\n/**\r\n * 类功能：树状图数据操作类\r\n *\r\n * @author gwwang\r\n * @date 2021/2/19 11:30\r\n */\r\npublic class RelationTreePresenter {\r\n    private static final String TAG = \"RelationTreePresenter\";\r\n\r\n    private List<OrgDeptEntity> entityList;\r\n\r\n    /**\r\n     * 构造方法\r\n     *\r\n     * @param entityList 部门的全量数据\r\n     */\r\n    public RelationTreePresenter(List<OrgDeptEntity> entityList) {\r\n        this.entityList = entityList;\r\n    }\r\n\r\n    /**\r\n     * 根据区域id查询部门数据\r\n     *\r\n     * @param divisionId\r\n     * @return\r\n     */\r\n    public OrgDeptEntity queryTreeDataById(String divisionId) {\r\n        for (OrgDeptEntity ele : entityList) {\r\n            if (divisionId.equals(ele.getXzqh())) {\r\n                return ele;\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public int getPersonCount(OrgDeptEntity deptData) {\r\n        Set<String> person = new HashSet<String>();\r\n        recursiveGetCount(deptData, person);\r\n        return person.size();\r\n    }\r\n\r\n    private void recursiveGetCount(OrgDeptEntity deptData, Set<String> result) {\r\n        if (!ListUtils.isEmpty(deptData.getContactUsers())) {\r\n            for (OrgUserEntity contactUser : deptData.getContactUsers()) {\r\n                result.add(contactUser.getName());\r\n            }\r\n        }\r\n        if (!ListUtils.isEmpty(deptData.getChildContactDept())) {\r\n            for (OrgDeptEntity childDeptData : deptData.getChildContactDept()) {\r\n                recursiveGetCount(childDeptData, result);\r\n            }\r\n        }\r\n    }\r\n\r\n    int colIndex = 0;\r\n\r\n    public CellRect buildTreeDataConstructor(OrgDeptEntity deptEntity, int cellLayoutResId) {\r\n        //0,0 --- rootNode---不折叠\r\n        CellRect rootNode = new CellRect(colIndex = 0, 0, false);\r\n        rootNode.bindData = deptEntity;\r\n        rootNode.normalBgResId = R.drawable.bg_cell_layout_green_radius_10;\r\n        rootNode.highLightBgResId = R.drawable.bg_cell_layout_orange_radius_10;\r\n        rootNode.layoutResId = cellLayoutResId;\r\n        rootNode.contentText = buildCellContentText(deptEntity);\r\n        rootNode.childCells = new ArrayList<>();\r\n        //x,x --- 其他node---均折叠\r\n        recursiveBuildTreeData(++colIndex, rootNode, cellLayoutResId, deptEntity);\r\n        return rootNode;\r\n    }\r\n\r\n    /**\r\n     * 将部门数据转化为cellData\r\n     *\r\n     * @param cellLayoutResId\r\n     * @param deptData\r\n     * @return\r\n     */\r\n    public void recursiveBuildTreeData(int colIndex, CellRect parentNode, int cellLayoutResId, OrgDeptEntity deptData) {\r\n        int rowI = 0;\r\n        for (OrgDeptEntity entity : deptData.getChildContactDept()) {\r\n            CellRect node = new CellRect(colIndex, rowI, true);\r\n            node.bindData = entity;\r\n            node.layoutResId = cellLayoutResId;\r\n            node.normalBgResId = R.drawable.bg_cell_layout_green_radius_10;\r\n            node.highLightBgResId = R.drawable.bg_cell_layout_orange_radius_10;\r\n            node.contentText = buildCellContentText(entity);\r\n            node.childCells = new ArrayList<>();\r\n            parentNode.childCells.add(node);\r\n            if (!ListUtils.isEmpty(entity.getChildContactDept())) {\r\n                //留意此处的递归条件\r\n                //遇到有子节点时，列索引+1  。。。。但是遍历完成之后，马上要列索引-1（因为该节点的兄弟节点也可能有子节点）\r\n                recursiveBuildTreeData(++this.colIndex, node, cellLayoutResId, entity);\r\n                --this.colIndex;\r\n            }\r\n            rowI++;\r\n        }\r\n    }\r\n\r\n    private String buildCellContentText(OrgDeptEntity entity) {\r\n        String deptName = entity.getName();\r\n        StringBuffer contactName = new StringBuffer();\r\n        List<OrgUserEntity> contactUsers = entity.getContactUsers();\r\n        if (!ListUtils.isEmpty(contactUsers)) {\r\n            for (OrgUserEntity contactUser : contactUsers) {\r\n                contactName.append(\"\\n\" + contactUser.getPosition() + \" \" + contactUser.getName());\r\n            }\r\n        }\r\n        return deptName + contactName.toString();\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bytemiracle/project/contacts/controller/RelationTreePresenter.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/java/com/bytemiracle/project/contacts/controller/RelationTreePresenter.java	(date 1615360034947)
+@@ -1,8 +1,12 @@
+ package com.bytemiracle.project.contacts.controller;
+ 
++import android.graphics.Color;
++
++import com.bytemiracle.base.framework.GlobalInstanceHolder;
++import com.bytemiracle.base.framework.drawable.RoundRectDrawable;
+ import com.bytemiracle.base.framework.utils.ListUtils;
+ import com.bytemiracle.base.framework.view.relationTree.CellRect;
+-import com.bytemiracle.project.R;
++import com.bytemiracle.base.framework.view.relationTree.RelationTreeLayout;
+ import com.bytemiracle.project.contacts.bean.OrgDeptEntity;
+ import com.bytemiracle.project.contacts.bean.OrgUserEntity;
+ 
+@@ -70,10 +74,10 @@
+ 
+     public CellRect buildTreeDataConstructor(OrgDeptEntity deptEntity, int cellLayoutResId) {
+         //0,0 --- rootNode---不折叠
++        int strokeWidth = GlobalInstanceHolder.dp5();
+         CellRect rootNode = new CellRect(colIndex = 0, 0, false);
+         rootNode.bindData = deptEntity;
+-        rootNode.normalBgResId = R.drawable.bg_cell_layout_green_radius_10;
+-        rootNode.highLightBgResId = R.drawable.bg_cell_layout_orange_radius_10;
++        rootNode.backgroundDrawable = new RoundRectDrawable(Color.WHITE, RelationTreeLayout.CELL_COLORS[colIndex], strokeWidth, strokeWidth);
+         rootNode.layoutResId = cellLayoutResId;
+         rootNode.contentText = buildCellContentText(deptEntity);
+         rootNode.childCells = new ArrayList<>();
+@@ -95,8 +99,8 @@
+             CellRect node = new CellRect(colIndex, rowI, true);
+             node.bindData = entity;
+             node.layoutResId = cellLayoutResId;
+-            node.normalBgResId = R.drawable.bg_cell_layout_green_radius_10;
+-            node.highLightBgResId = R.drawable.bg_cell_layout_orange_radius_10;
++            int strokeWidth = GlobalInstanceHolder.dp5();
++            node.backgroundDrawable = new RoundRectDrawable(Color.WHITE, RelationTreeLayout.CELL_COLORS[colIndex], strokeWidth, strokeWidth);
+             node.contentText = buildCellContentText(entity);
+             node.childCells = new ArrayList<>();
+             parentNode.childCells.add(node);
+@@ -122,4 +126,27 @@
+         return deptName + contactName.toString();
+     }
+ 
++    /**
++     * 查询自己下面的联系人
++     *
++     * @param deptData
++     * @param userId
++     * @return
++     */
++    public OrgDeptEntity queryChildDeptData(OrgDeptEntity deptData, String userId) {
++        OrgDeptEntity[] result = new OrgDeptEntity[]{deptData};//默认全部数据
++        recursiveQueryChildDeptData(deptData, userId, result);
++        return result[0];
++    }
++
++    private void recursiveQueryChildDeptData(OrgDeptEntity deptData, String userId, OrgDeptEntity[] result) {
++        if (!ListUtils.isEmpty(deptData.getContactUsers()) && Integer.parseInt(userId) == deptData.getContactUsers().get(0).getId()) {
++            result[0] = deptData;
++        }
++        if (!ListUtils.isEmpty(deptData.getChildContactDept())) {
++            for (OrgDeptEntity childDept : deptData.getChildContactDept()) {
++                recursiveQueryChildDeptData(childDept, userId, result);
++            }
++        }
++    }
+ }
+Index: app/src/main/java/com/bytemiracle/project/policyMessage/service/MsgMonitorService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.project.policyMessage.service;\r\n\r\nimport android.app.Service;\r\nimport android.content.Intent;\r\nimport android.os.Build;\r\nimport android.os.IBinder;\r\n\r\nimport androidx.annotation.Nullable;\r\nimport androidx.annotation.RequiresApi;\r\n\r\nimport com.bytemiracle.project.common.RabbitMqUnit;\r\n\r\n/**\r\n * 监听rabbitmq，接收消息\r\n *\r\n * @author xuexiang\r\n * @since 2019/1/21 下午12:03\r\n */\r\npublic class MsgMonitorService extends Service {\r\n    public final static String KEY_APP_UID = \"com.bytemiracle.project.service.key_app_uid\";\r\n    public final static String KEY_APP_NAME = \"com.bytemiracle.project.service.key_app_name\";\r\n    public final static String KEY_APP_PACKAGE_NAME = \"com.bytemiracle.project.service.key_app_package_name\";\r\n    public static final String CHANNEL_ID = \"MsgMonitorService\";\r\n    private final String exchangeName = \"\";\r\n\r\n    @Nullable\r\n    @Override\r\n    public IBinder onBind(Intent intent) {\r\n        return null;\r\n    }\r\n\r\n    @Override\r\n    public int onStartCommand(Intent intent, int flags, int startId) {\r\n        return super.onStartCommand(intent, flags, startId);\r\n    }\r\n\r\n    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)\r\n    @Override\r\n    public void onCreate() {\r\n        super.onCreate();\r\n        // 连接rabbitMq\r\n        RabbitMqUnit.CreateInstance().setUpConnectionFactory();\r\n        RabbitMqUnit.CreateInstance().ReciveRessage();\r\n    }\r\n}\r\n
+===================================================================
+--- app/src/main/java/com/bytemiracle/project/policyMessage/service/MsgMonitorService.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/java/com/bytemiracle/project/policyMessage/service/ReceiveMQService.java	(date 1615354519524)
+@@ -2,39 +2,20 @@
+ 
+ import android.app.Service;
+ import android.content.Intent;
+-import android.os.Build;
+ import android.os.IBinder;
+ 
+ import androidx.annotation.Nullable;
+-import androidx.annotation.RequiresApi;
+ 
+ import com.bytemiracle.project.common.RabbitMqUnit;
+ 
+ /**
+  * 监听rabbitmq，接收消息
+  *
+- * @author xuexiang
+- * @since 2019/1/21 下午12:03
++ * @author gwwang
++ * @since 2021/03/10
+  */
+-public class MsgMonitorService extends Service {
+-    public final static String KEY_APP_UID = "com.bytemiracle.project.service.key_app_uid";
+-    public final static String KEY_APP_NAME = "com.bytemiracle.project.service.key_app_name";
+-    public final static String KEY_APP_PACKAGE_NAME = "com.bytemiracle.project.service.key_app_package_name";
+-    public static final String CHANNEL_ID = "MsgMonitorService";
+-    private final String exchangeName = "";
++public class ReceiveMQService extends Service {
+ 
+-    @Nullable
+-    @Override
+-    public IBinder onBind(Intent intent) {
+-        return null;
+-    }
+-
+-    @Override
+-    public int onStartCommand(Intent intent, int flags, int startId) {
+-        return super.onStartCommand(intent, flags, startId);
+-    }
+-
+-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+     @Override
+     public void onCreate() {
+         super.onCreate();
+@@ -42,4 +23,10 @@
+         RabbitMqUnit.CreateInstance().setUpConnectionFactory();
+         RabbitMqUnit.CreateInstance().ReciveRessage();
+     }
++
++    @Nullable
++    @Override
++    public IBinder onBind(Intent intent) {
++        return null;
++    }
+ }
+Index: smart-base/src/main/java/com/bytemiracle/base/framework/GlobalInstanceHolder.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.base.framework;\r\n\r\nimport android.app.Application;\r\nimport android.os.Handler;\r\n\r\nimport com.bytemiracle.base.framework.component.BaseActivity;\r\n\r\nimport java.util.concurrent.Executor;\r\nimport java.util.concurrent.Executors;\r\n\r\n/**\r\n * 类功能：TODO:\r\n *\r\n * @author gwwang\r\n * @date 2021/2/25 15:58\r\n */\r\npublic class GlobalInstanceHolder {\r\n    private static BaseActivity rootActivity;\r\n\r\n    private static Application applicationContext;\r\n\r\n    private static Handler mainHandler;\r\n\r\n    //两个单线程，随便用一个\r\n    private static Executor[] executors = new Executor[]{\r\n            Executors.newSingleThreadExecutor(),\r\n            Executors.newSingleThreadExecutor()\r\n    };\r\n\r\n    public static void setApplicationContext(Application context) {\r\n        GlobalInstanceHolder.applicationContext = context;\r\n    }\r\n\r\n    public static void setRootActivityContext(BaseActivity context) {\r\n        GlobalInstanceHolder.rootActivity = context;\r\n    }\r\n\r\n    public static BaseActivity rootActivity() {\r\n        return GlobalInstanceHolder.rootActivity;\r\n    }\r\n\r\n    public static Application applicationContext() {\r\n        return GlobalInstanceHolder.applicationContext;\r\n    }\r\n\r\n    public static void setMainHandler(Handler mainHandler) {\r\n        GlobalInstanceHolder.mainHandler = mainHandler;\r\n    }\r\n\r\n    public static Handler mainHandler() {\r\n        return GlobalInstanceHolder.mainHandler;\r\n    }\r\n\r\n    public static Executor newSingleExecutor() {\r\n        return executors[0];\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- smart-base/src/main/java/com/bytemiracle/base/framework/GlobalInstanceHolder.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ smart-base/src/main/java/com/bytemiracle/base/framework/GlobalInstanceHolder.java	(date 1615359605104)
+@@ -3,6 +3,7 @@
+ import android.app.Application;
+ import android.os.Handler;
+ 
++import com.bytemiracle.base.R;
+ import com.bytemiracle.base.framework.component.BaseActivity;
+ 
+ import java.util.concurrent.Executor;
+@@ -55,4 +56,16 @@
+         return executors[0];
+     }
+ 
++    public static int dp5() {
++        return applicationContext().getResources().getDimensionPixelSize(R.dimen.dpx_5);
++    }
++
++    public static int sp14() {
++        return applicationContext().getResources().getDimensionPixelSize(R.dimen.spx_14);
++    }
++
++    public static int sp18() {
++        return applicationContext().getResources().getDimensionPixelSize(R.dimen.spx_18);
++    }
++
+ }
+Index: smart-base/src/main/java/com/bytemiracle/base/framework/drawable/RoundRectDrawable.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- smart-base/src/main/java/com/bytemiracle/base/framework/drawable/RoundRectDrawable.java	(date 1615356695916)
++++ smart-base/src/main/java/com/bytemiracle/base/framework/drawable/RoundRectDrawable.java	(date 1615356695916)
+@@ -0,0 +1,86 @@
++package com.bytemiracle.base.framework.drawable;
++
++import android.graphics.Canvas;
++import android.graphics.ColorFilter;
++import android.graphics.Outline;
++import android.graphics.Paint;
++import android.graphics.PixelFormat;
++import android.graphics.Rect;
++import android.graphics.RectF;
++import android.graphics.drawable.Drawable;
++
++/**
++ * Very simple drawable that draws a rounded rectangle background with arbitrary corners and also
++ * reports proper outline for L.
++ * <p>
++ * Simpler and uses less resources compared to GradientDrawable or ShapeDrawable.
++ */
++public class RoundRectDrawable extends Drawable {
++    private int outBackgroundColor;
++    private int innerBackgroundColor;
++    private int strokeWidth;
++    float mRadius;
++    final Paint mPaint;
++    final RectF mBounds;
++
++    public RoundRectDrawable(int outBackgroundColor, float radius) {
++        this(outBackgroundColor, outBackgroundColor, 0, radius);
++    }
++
++    public RoundRectDrawable(int outBackgroundColor, int innerBackgroundColor, int strokeWidth, float radius) {
++        this.outBackgroundColor = outBackgroundColor;
++        this.innerBackgroundColor = innerBackgroundColor;
++        this.strokeWidth = strokeWidth;
++        this.mRadius = radius;
++        this.mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
++        this.mBounds = new RectF();
++    }
++
++    @Override
++    public void draw(Canvas canvas) {
++        mPaint.setColor(outBackgroundColor);
++        canvas.drawRoundRect(mBounds, mRadius, mRadius, mPaint);
++
++        mPaint.setColor(innerBackgroundColor);
++        RectF innerBounds = new RectF(strokeWidth, strokeWidth, mBounds.right - strokeWidth, mBounds.bottom - strokeWidth);
++        canvas.drawRoundRect(innerBounds, mRadius, mRadius, mPaint);
++    }
++
++    @Override
++    protected void onBoundsChange(Rect bounds) {
++        super.onBoundsChange(bounds);
++        mBounds.set(bounds.left, bounds.top, bounds.right, bounds.bottom);
++    }
++
++    @Override
++    public void getOutline(Outline outline) {
++        outline.setRoundRect(getBounds(), mRadius);
++    }
++
++    public void setRadius(float radius) {
++        if (radius == mRadius) {
++            return;
++        }
++        mRadius = radius;
++        invalidateSelf();
++    }
++
++    @Override
++    public void setAlpha(int alpha) {
++        // not supported because older versions do not support
++    }
++
++    @Override
++    public void setColorFilter(ColorFilter cf) {
++        // not supported because older versions do not support
++    }
++
++    @Override
++    public int getOpacity() {
++        return PixelFormat.OPAQUE;
++    }
++
++    public float getRadius() {
++        return mRadius;
++    }
++}
+\ No newline at end of file
+Index: smart-base/src/main/java/com/bytemiracle/base/framework/view/relationTree/CellRect.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.base.framework.view.relationTree;\r\n\r\nimport android.graphics.RectF;\r\nimport android.view.View;\r\n\r\nimport java.util.List;\r\n\r\n/**\r\n * 类功能：此处可以理解为链表结构中的双向链表\r\n *\r\n * @author gwwang\r\n * @date 2021/2/8 11:46\r\n */\r\npublic class CellRect {\r\n    //node的数据和view\r\n    public int colIndex;\r\n    public int rowIndex;\r\n    public View bindView;\r\n    public int layoutResId;\r\n    //背景资源\r\n    public int normalBgResId;\r\n    public int highLightBgResId;\r\n    //绑定数据\r\n    public Object bindData;\r\n    //文本\r\n    public String contentText;\r\n    //后勾和前勾\r\n    public List<CellRect> childCells;\r\n    public CellRect parent;\r\n    //是否折叠状态\r\n    private boolean collapse;\r\n    //折叠按钮矩形\r\n    private RectF collapseClipRect;\r\n    //是否遍历过该节点\r\n    private boolean traversed;\r\n\r\n    public RectF getCollapseClipRect() {\r\n        return collapseClipRect;\r\n    }\r\n\r\n    public void setCollapseClipRect(RectF collapseClipRect) {\r\n        this.collapseClipRect = collapseClipRect;\r\n    }\r\n\r\n    public boolean hasChild() {\r\n        return childCells != null && childCells.size() != 0;\r\n\r\n    }\r\n\r\n    /**\r\n     * 构造方法\r\n     *\r\n     * @param colIndex 列索引\r\n     * @param rowIndex 横索引\r\n     * @param collapse 折叠状态\r\n     */\r\n    public CellRect(int colIndex, int rowIndex, boolean collapse) {\r\n        this.colIndex = colIndex;\r\n        this.rowIndex = rowIndex;\r\n        this.collapse = collapse;\r\n    }\r\n\r\n    public boolean isTraversed() {\r\n        return traversed;\r\n    }\r\n\r\n    public void setTraversed(boolean traversed) {\r\n        this.traversed = traversed;\r\n    }\r\n\r\n    @Override\r\n    public String toString() {\r\n        return \"CellRect{\" +\r\n                \"colIndex=\" + colIndex +\r\n                \", rowIndex=\" + rowIndex +\r\n                \", collapse=\" + collapse +\r\n                '}';\r\n    }\r\n\r\n    public boolean isCollapse() {\r\n        return collapse;\r\n    }\r\n\r\n    public void setCollapse(boolean collapse) {\r\n        this.collapse = collapse;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- smart-base/src/main/java/com/bytemiracle/base/framework/view/relationTree/CellRect.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ smart-base/src/main/java/com/bytemiracle/base/framework/view/relationTree/CellRect.java	(date 1615360034941)
+@@ -1,7 +1,11 @@
+ package com.bytemiracle.base.framework.view.relationTree;
+ 
+ import android.graphics.RectF;
++import android.graphics.drawable.Drawable;
+ import android.view.View;
++import android.widget.TextView;
++
++import com.bytemiracle.base.R;
+ 
+ import java.util.List;
+ 
+@@ -18,8 +22,7 @@
+     public View bindView;
+     public int layoutResId;
+     //背景资源
+-    public int normalBgResId;
+-    public int highLightBgResId;
++    public Drawable backgroundDrawable;
+     //绑定数据
+     public Object bindData;
+     //文本
+@@ -84,4 +87,24 @@
+     public void setCollapse(boolean collapse) {
+         this.collapse = collapse;
+     }
++
++    /**
++     * 高亮
++     *
++     * @param cell
++     */
++    public static void makeHighLight(CellRect cell) {
++        ((TextView) cell.bindView.findViewById(R.id.cell_content)).getPaint().setUnderlineText(true);
++        ((TextView) cell.bindView.findViewById(R.id.cell_content)).getPaint().setFakeBoldText(true);
++    }
++
++    /**
++     * 清除高亮
++     *
++     * @param cell
++     */
++    public static void clearHighLight(CellRect cell) {
++        ((TextView) cell.bindView.findViewById(R.id.cell_content)).getPaint().setUnderlineText(false);
++        ((TextView) cell.bindView.findViewById(R.id.cell_content)).getPaint().setFakeBoldText(false);
++    }
+ }
+Index: app/src/main/java/com/bytemiracle/project/contacts/controller/ContactsPresenter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.project.contacts.controller;\r\n\r\nimport android.util.Log;\r\n\r\nimport com.alibaba.fastjson.JSONObject;\r\nimport com.bytemiracle.base.framework.listener.CommonAsyncListener;\r\nimport com.bytemiracle.base.framework.utils.ConstantsUtil;\r\nimport com.bytemiracle.base.framework.utils.EasySharedPreference;\r\nimport com.bytemiracle.base.framework.view.relationTree.CellRect;\r\nimport com.xuexiang.xhttp2.XHttp;\r\nimport com.xuexiang.xhttp2.callback.SimpleCallBack;\r\nimport com.xuexiang.xhttp2.exception.ApiException;\r\n\r\nimport org.apache.commons.lang3.StringUtils;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\n/**\r\n * 类功能：数据获取\r\n *\r\n * @author gwwang\r\n * @date 2021/2/26 17:16\r\n */\r\npublic class ContactsPresenter {\r\n\r\n    private boolean[] flagCompletes = {false, false};\r\n\r\n    /**\r\n     * 调用数据接口\r\n     */\r\n    public void asyncGetContactsData(CommonAsyncListener<Boolean> asyncCompleteListener) {\r\n        //获取行政区划信息\r\n        aysncGetXzqhInfo(asyncCompleteListener);\r\n        //获取部门信息\r\n        asyncGetDeptInfo(asyncCompleteListener);\r\n    }\r\n\r\n    private boolean checkAllCompleted() {\r\n        boolean completed = true;\r\n        for (boolean asyncComplete : flagCompletes) {\r\n            if (!asyncComplete) {\r\n                completed = false;\r\n            }\r\n        }\r\n        return completed;\r\n    }\r\n\r\n    //获取部门用户信息\r\n    private void asyncGetDeptInfo(CommonAsyncListener<Boolean> asyncCompleteListener) {\r\n        XHttp.get(\"api-user/dept/contact\").baseUrl(ConstantsUtil.SERVER_ADDRESS).keepJson(true).execute(new SimpleCallBack<String>() {\r\n            @Override\r\n            public void onSuccess(String response) {\r\n                JSONObject responseJson = JSONObject.parseObject(response);\r\n                if (responseJson.getBoolean(\"flag\") == true) {\r\n                    String data = responseJson.getString(\"data\");\r\n                    if (StringUtils.isNotEmpty(data)) {\r\n                        if (EasySharedPreference.get().contains(ConstantsUtil.APP_DEPT_USER_INFO)) {\r\n                            EasySharedPreference.get().remove(ConstantsUtil.APP_DEPT_USER_INFO);\r\n                        }\r\n                        EasySharedPreference.get().put(ConstantsUtil.APP_DEPT_USER_INFO, data);\r\n                        Log.i(\"MsgMonitorService\", \"调用部门用户接口成功!\");\r\n                    }\r\n                }\r\n                flagCompletes[0] = true;\r\n                if (checkAllCompleted() && asyncCompleteListener != null) {\r\n                    asyncCompleteListener.doSomething(true);\r\n                }\r\n            }\r\n\r\n            @Override\r\n            public void onError(ApiException e) {\r\n                Log.e(\"MsgMonitorService\", \"调用部门用户口异常!\");\r\n                if (asyncCompleteListener != null) {\r\n                    asyncCompleteListener.doSomething(false);\r\n                }\r\n            }\r\n        });\r\n    }\r\n\r\n    //获取行政区划信息\r\n    private void aysncGetXzqhInfo(CommonAsyncListener<Boolean> asyncCompleteListener) {\r\n        XHttp.get(\"model-manage/xzqh\").baseUrl(ConstantsUtil.SERVER_ADDRESS).keepJson(true).execute(new SimpleCallBack<String>() {\r\n            @Override\r\n            public void onSuccess(String response) {\r\n                JSONObject responseJson = JSONObject.parseObject(response);\r\n                if (responseJson.getBoolean(\"flag\") == true) {\r\n                    String data = responseJson.getString(\"data\");\r\n                    if (StringUtils.isNotEmpty(data)) {\r\n                        if (EasySharedPreference.get().contains(ConstantsUtil.APP_DIVISION_DICT)) {\r\n                            EasySharedPreference.get().remove(ConstantsUtil.APP_DIVISION_DICT);\r\n                        }\r\n                        EasySharedPreference.get().put(ConstantsUtil.APP_DIVISION_DICT, data);\r\n                        Log.i(\"MsgMonitorService\", \"调用行政区划接口成功!\");\r\n                    }\r\n                }\r\n                flagCompletes[1] = true;\r\n                if (checkAllCompleted() && asyncCompleteListener != null) {\r\n                    asyncCompleteListener.doSomething(true);\r\n                }\r\n            }\r\n\r\n            @Override\r\n            public void onError(ApiException e) {\r\n                Log.e(\"MsgMonitorService\", \"调用行政区划接口异常!\");\r\n                if (asyncCompleteListener != null) {\r\n                    asyncCompleteListener.doSomething(false);\r\n                }\r\n            }\r\n        });\r\n    }\r\n\r\n    private void recursiveBuildTextList(CellRect cell, ArrayList<String> results) {\r\n        results.add(cell.contentText);\r\n        if (cell.hasChild()) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                recursiveBuildTextList(childCell, results);\r\n            }\r\n        }\r\n    }\r\n\r\n    public List<String> buildCellTextList(CellRect rootCell) {\r\n        ArrayList<String> results = new ArrayList<>();\r\n        recursiveBuildTextList(rootCell, results);\r\n        return results;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bytemiracle/project/contacts/controller/ContactsPresenter.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/java/com/bytemiracle/project/contacts/controller/ContactsPresenter.java	(date 1615354949166)
+@@ -23,6 +23,7 @@
+  * @date 2021/2/26 17:16
+  */
+ public class ContactsPresenter {
++    private static final String TAG = "ContactsPresenter";
+ 
+     private boolean[] flagCompletes = {false, false};
+ 
+@@ -59,7 +60,7 @@
+                             EasySharedPreference.get().remove(ConstantsUtil.APP_DEPT_USER_INFO);
+                         }
+                         EasySharedPreference.get().put(ConstantsUtil.APP_DEPT_USER_INFO, data);
+-                        Log.i("MsgMonitorService", "调用部门用户接口成功!");
++                        Log.i(TAG, "调用部门用户接口成功!");
+                     }
+                 }
+                 flagCompletes[0] = true;
+@@ -70,7 +71,7 @@
+ 
+             @Override
+             public void onError(ApiException e) {
+-                Log.e("MsgMonitorService", "调用部门用户口异常!");
++                Log.e(TAG, "调用部门用户口异常!");
+                 if (asyncCompleteListener != null) {
+                     asyncCompleteListener.doSomething(false);
+                 }
+@@ -91,7 +92,7 @@
+                             EasySharedPreference.get().remove(ConstantsUtil.APP_DIVISION_DICT);
+                         }
+                         EasySharedPreference.get().put(ConstantsUtil.APP_DIVISION_DICT, data);
+-                        Log.i("MsgMonitorService", "调用行政区划接口成功!");
++                        Log.i(TAG, "调用行政区划接口成功!");
+                     }
+                 }
+                 flagCompletes[1] = true;
+@@ -102,7 +103,7 @@
+ 
+             @Override
+             public void onError(ApiException e) {
+-                Log.e("MsgMonitorService", "调用行政区划接口异常!");
++                Log.e(TAG, "调用行政区划接口异常!");
+                 if (asyncCompleteListener != null) {
+                     asyncCompleteListener.doSomething(false);
+                 }
+Index: smart-base/src/main/java/com/bytemiracle/base/framework/view/relationTree/RelationTreeLayout.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.base.framework.view.relationTree;\r\n\r\nimport android.content.Context;\r\nimport android.graphics.Canvas;\r\nimport android.graphics.RectF;\r\nimport android.util.AttributeSet;\r\nimport android.util.Pair;\r\nimport android.view.MotionEvent;\r\nimport android.view.ScaleGestureDetector;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.TextView;\r\n\r\nimport com.bytemiracle.base.R;\r\nimport com.bytemiracle.base.framework.listener.CommonAsyncListener;\r\n\r\nimport java.util.ArrayList;\r\n\r\n/**\r\n * 类功能：关系图\r\n *\r\n * @author gwwang\r\n * @date 2021/2/6 11:43\r\n */\r\npublic class RelationTreeLayout extends ViewGroup {\r\n    private static final String TAG = \"RelationTreeLayout\";\r\n    private static final float HOR_MARGIN_RATIO = .6f;\r\n    private static final float VER_MARGIN_RATIO = .3f;\r\n    //cell横向间距\r\n    public static int horizontal_margin = 200;\r\n    //cell竖向间距\r\n    public static int vertical_margin = 100;\r\n    private static final int POLYGON_RADIUS = 50;\r\n    //最大最小缩放值\r\n    public static final float MAX_SCALE_RATIO = 1.0f;\r\n    private static final float MIN_SCALE_RATIO = 0.5f;\r\n\r\n    //cell/canvas控制器\r\n    private CellController cellController;\r\n    private CommonAsyncListener scrollListener;\r\n    private CanvasController canvasController;\r\n\r\n    //控件高度\r\n    private int viewHeight;\r\n    //当前布局的xy\r\n    int layoutX = 0, layoutY = 0;\r\n\r\n    /**\r\n     * 数据\r\n     */\r\n    private CellRect rootCell;\r\n    public CommonAsyncListener onClickCellListener;\r\n\r\n    private ScaleGestureDetector mScaleDetector;\r\n    private float gestureScaleRatio = 1.0f;\r\n\r\n    public RelationTreeLayout(Context context) {\r\n        this(context, null);\r\n    }\r\n\r\n    public RelationTreeLayout(Context context, AttributeSet attrs) {\r\n        this(context, attrs, 0);\r\n    }\r\n\r\n    public RelationTreeLayout(Context context, AttributeSet attrs, int defStyleAttr) {\r\n        super(context, attrs, defStyleAttr);\r\n        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());\r\n    }\r\n\r\n    @Override\r\n    protected void onLayout(boolean changed, int l, int t, int r, int b) {\r\n        layoutX = 0;\r\n        layoutY = 0;\r\n        viewHeight = getMeasuredHeight();\r\n        recursiveLayoutCell(rootCell, RecursiveDirection.RIGHT);\r\n        cellController.recursiveUpdateCollapseClipRect(rootCell);\r\n        cellController.recursiveVisibleCellByCollapseState(rootCell);\r\n        cellController.recursiveResizeCellByScale(rootCell, childInitRect, childInitTextSize, gestureScaleRatio);\r\n    }\r\n\r\n    public void setHighLightCell(String highLightCellText) {\r\n        CellRect highLightCell = cellController.findCellByText(rootCell, highLightCellText);\r\n        if (highLightCell != null) {\r\n            resetCanvas();\r\n            highLightCell.bindView.setBackgroundResource(highLightCell.highLightBgResId);\r\n            cellController.recursiveCollapseChildren(rootCell);\r\n            cellController.openParentCollapse(highLightCell);\r\n            gestureScaleRatio = MIN_SCALE_RATIO;\r\n            scrollListener.doSomething(null);\r\n        }\r\n    }\r\n\r\n    private void recursiveLayoutCell(CellRect cell, RecursiveDirection rDirection) {\r\n        if (cell == null || rDirection == RecursiveDirection.OVER) {\r\n            //节点\r\n            return;\r\n        }\r\n        int childWidth = cell.bindView.getMeasuredWidth();\r\n        int childHeight = cell.bindView.getMeasuredHeight();\r\n        if (cellController.isRootNode(cell)) {\r\n            //根node\r\n            cell.bindView.layout(layoutX, viewHeight / 2, layoutX + childWidth, viewHeight / 2 + childHeight);\r\n        } else if (cell.bindView.getVisibility() == VISIBLE) {\r\n            //非根node\r\n            updateXY(rDirection, cell);\r\n            cell.bindView.layout(layoutX, layoutY, layoutX + childWidth, layoutY + childHeight);\r\n        }\r\n        cell.setTraversed(true);\r\n        Pair<CellRect, RecursiveDirection> nextCell = cellController.getNextCell(cell);\r\n        recursiveLayoutCell(nextCell.first, nextCell.second);\r\n    }\r\n\r\n    private int fixChildrenVerticalOffset(CellRect cell) {\r\n        CellRect parent = cell.parent;\r\n        if (parent == null) {\r\n            return 0;\r\n        }\r\n        int childrenTotalHeight = cellController.getChildrenTotalHeight(parent, vertical_margin);\r\n        float parentRCY = parent.bindView.getY() + parent.bindView.getMeasuredHeight() * .5f;\r\n        //非移动画布的自动偏移\r\n//        int viewHeight = getMeasuredHeight();\r\n//        if (childrenTotalHeight > viewHeight) {\r\n//            //子节点总高度大于屏幕高度\r\n//            return 0;\r\n//        }\r\n//        if (parentRCY <= viewHeight * .5f) {\r\n//            //父节点处于屏幕中上\r\n//            if (childrenTotalHeight * .5f < parentRCY) {\r\n//                //可以放下以父节点在子节点中央的情况\r\n//                return (int) (parentRCY - childrenTotalHeight * .5f);\r\n//            } else {\r\n//                //放不下\r\n//                return (int) parent.bindView.getY();\r\n//            }\r\n//        } else {\r\n//            //父节点处于屏幕中下\r\n//            if (childrenTotalHeight * .5f < viewHeight - parentRCY) {\r\n//                //可以放下以父节点在子节点中央的情况\r\n//                return (int) (parentRCY - childrenTotalHeight * .5f);\r\n//            } else {\r\n//                //放不下\r\n//                return (int) (parentRCY + parent.bindView.getMeasuredHeight() / 2 - childrenTotalHeight);\r\n//            }\r\n//        }\r\n        //移动画布的偏移\r\n        return (int) (parentRCY - childrenTotalHeight * .5f);\r\n    }\r\n\r\n    private void updateXY(RecursiveDirection recursiveDirection, CellRect cell) {\r\n        switch (recursiveDirection) {\r\n            case RIGHT:\r\n                layoutX = layoutX + cell.bindView.getMeasuredWidth() + horizontal_margin;\r\n                layoutY = fixChildrenVerticalOffset(cell);\r\n                break;\r\n            case BOTTOM:\r\n                layoutY = layoutY + cell.bindView.getMeasuredHeight() + vertical_margin;\r\n                break;\r\n            case LEFT_BOTTOM:\r\n                CellRect topCell = cellController.findTopCell(cell);\r\n                layoutX = (int) topCell.bindView.getX();\r\n                layoutY = (int) topCell.bindView.getY() + topCell.bindView.getMeasuredHeight() + vertical_margin;\r\n                break;\r\n        }\r\n    }\r\n\r\n    @Override\r\n    protected void dispatchDraw(Canvas canvas) {\r\n        super.dispatchDraw(canvas);\r\n        canvasController = new CanvasController(canvas, getResources().getColor(R.color.relation_tree_line_color));\r\n        link2Children(this.rootCell);\r\n    }\r\n\r\n    private void link2Children(CellRect cell) {\r\n        if (cell.hasChild()) {\r\n            if (!cell.isCollapse()) {\r\n                for (CellRect childCell : cell.childCells) {\r\n                    canvasController.drawPolygonLine(cell, childCell, cellController);\r\n                    link2Children(childCell);\r\n                }\r\n                canvasController.drawCollapseOpenIcon(cell, cellController);\r\n            } else {\r\n                canvasController.drawCollapseCloseIcon(cell, cellController);\r\n            }\r\n        }\r\n    }\r\n\r\n\r\n    private double calcSqrt(float x, float y) {\r\n        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));\r\n    }\r\n\r\n    @Override\r\n    public boolean onInterceptTouchEvent(MotionEvent event) {\r\n        return true;\r\n    }\r\n\r\n    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {\r\n        @Override\r\n        public boolean onScale(ScaleGestureDetector detector) {\r\n            gestureScaleRatio *= detector.getScaleFactor();\r\n            gestureScaleRatio = Math.max(MIN_SCALE_RATIO, Math.min(gestureScaleRatio, MAX_SCALE_RATIO));\r\n            //重新调用onMeasure布局\r\n            requestLayout();\r\n            return true;\r\n        }\r\n    }\r\n\r\n    private float clickX;\r\n    private float clickY;\r\n    private float moveDistanceTwice;\r\n    private boolean isMultiPointMode = false;\r\n\r\n    @Override\r\n    public boolean onTouchEvent(MotionEvent event) {\r\n        mScaleDetector.onTouchEvent(event);\r\n        switch (event.getActionMasked()) {\r\n            case MotionEvent.ACTION_DOWN:\r\n                isMultiPointMode = false;\r\n                moveDistanceTwice = 0;\r\n                clickX = event.getX();\r\n                clickY = event.getY();\r\n                return true;\r\n            case MotionEvent.ACTION_POINTER_DOWN:\r\n                isMultiPointMode = true;\r\n                break;\r\n            case MotionEvent.ACTION_MOVE:\r\n                if (event.getPointerCount() > 1 || !isMultiPointMode) {\r\n                    //多指的时候响应move事件，优化缩放不随中点\r\n                    scrollBy(-(int) (event.getX() - clickX), -(int) (event.getY() - clickY));\r\n                    moveDistanceTwice += calcSqrt(event.getX() - clickX, event.getY() - clickY);\r\n                    if (moveDistanceTwice > MotionEvent.AXIS_DISTANCE && scrollListener != null) {\r\n                        scrollListener.doSomething(null);\r\n                    }\r\n                    clickX = event.getX();\r\n                    clickY = event.getY();\r\n                }\r\n                break;\r\n            case MotionEvent.ACTION_UP:\r\n                if (!isMultiPointMode) {\r\n                    if (moveDistanceTwice < MotionEvent.AXIS_DISTANCE) {\r\n                        //判定手指没有移动，再响应点击事件\r\n                        //1.响应折叠\r\n                        CellRect bindCell = cellController.findAttachCell(event.getX() + getScrollX(), event.getY() + getScrollY());\r\n                        if (bindCell != null) {\r\n                            cellController.collapseCell(bindCell, this);\r\n                            return false;\r\n                        }\r\n                        //2.响应cell点击\r\n                        CellRect clickCell = cellController.findClickCell(event.getX() + getScrollX(), event.getY() + getScrollY());\r\n                        if (clickCell != null && onClickCellListener != null) {\r\n                            onClickCellListener.doSomething(clickCell.bindData);\r\n                            return false;\r\n                        }\r\n                    }\r\n                }\r\n                break;\r\n        }\r\n        return super.onTouchEvent(event);\r\n    }\r\n\r\n    private RectF childInitRect;\r\n    private float childInitTextSize;\r\n\r\n    @Override\r\n    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {\r\n        //设置初始的子view大小(不随手势)\r\n        cellController.reTraversal(rootCell);\r\n        if (childInitRect == null && getChildCount() > 0) {\r\n            View rootView = getChildAt(0);\r\n            measureChild(rootView, widthMeasureSpec, heightMeasureSpec);\r\n            childInitRect = new RectF(0, 0, rootView.getMeasuredWidth(), rootView.getMeasuredHeight());\r\n            childInitTextSize = ((TextView) rootView.findViewById(R.id.cell_content)).getTextSize();\r\n        }\r\n        //设置初始margin（随手势）\r\n        horizontal_margin = (int) (HOR_MARGIN_RATIO * gestureScaleRatio * childInitRect.width());\r\n        vertical_margin = (int) (VER_MARGIN_RATIO * gestureScaleRatio * childInitRect.height());\r\n        //测量子view\r\n        int widthSize = MeasureSpec.getSize(widthMeasureSpec);\r\n        int heightSize = MeasureSpec.getSize(heightMeasureSpec);\r\n        for (int i = 0; i < getChildCount(); i++) {\r\n            View childView = getChildAt(i);\r\n            int wM = MeasureSpec.makeMeasureSpec((int) (childInitRect.width() * gestureScaleRatio), MeasureSpec.EXACTLY);\r\n            int hM = MeasureSpec.makeMeasureSpec((int) (childInitRect.height() * gestureScaleRatio), MeasureSpec.EXACTLY);\r\n            measureChild(childView, wM, hM);\r\n        }\r\n        setMeasuredDimension(widthSize, heightSize);\r\n    }\r\n\r\n    /**\r\n     * 重置滚动位置\r\n     */\r\n    public void resetCanvas() {\r\n        gestureScaleRatio = 1.0f;\r\n        cellController.recursiveResetCellBackground(rootCell);\r\n        setScrollX(0);\r\n        setScrollY(0);\r\n        requestLayout();\r\n    }\r\n\r\n    /**\r\n     * 设置树状结构图的cell数据\r\n     *\r\n     * @param rootCell            根节点cell数据\r\n     * @param onClickCellListener cell的点击事件\r\n     */\r\n    public void setCellData(CellRect rootCell, CommonAsyncListener onClickCellListener, CommonAsyncListener scrollListener) {\r\n        this.rootCell = rootCell;\r\n        this.onClickCellListener = onClickCellListener;\r\n        this.cellController = new CellController(rootCell);\r\n        this.scrollListener = scrollListener;\r\n        removeAllViews();\r\n\r\n        ArrayList<CellRect> recursiveArrays = new ArrayList<>();\r\n        recursiveArrays.add(this.rootCell);\r\n        cellController.recursiveBindCellViews(this.rootCell, recursiveArrays, this);\r\n        requestLayout();\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- smart-base/src/main/java/com/bytemiracle/base/framework/view/relationTree/RelationTreeLayout.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ smart-base/src/main/java/com/bytemiracle/base/framework/view/relationTree/RelationTreeLayout.java	(date 1615359901574)
+@@ -26,6 +26,8 @@
+     private static final String TAG = "RelationTreeLayout";
+     private static final float HOR_MARGIN_RATIO = .6f;
+     private static final float VER_MARGIN_RATIO = .3f;
++    //cell颜色列表（每一列使用同一个颜色）
++    public static final int[] CELL_COLORS = new int[]{0xff000bd3, 0xffdc8701, 0xff8cbe00, 0xff09b880, 0xff008bf6, 0xff007947};
+     //cell横向间距
+     public static int horizontal_margin = 200;
+     //cell竖向间距
+@@ -82,7 +84,7 @@
+         CellRect highLightCell = cellController.findCellByText(rootCell, highLightCellText);
+         if (highLightCell != null) {
+             resetCanvas();
+-            highLightCell.bindView.setBackgroundResource(highLightCell.highLightBgResId);
++            CellRect.makeHighLight(highLightCell);
+             cellController.recursiveCollapseChildren(rootCell);
+             cellController.openParentCollapse(highLightCell);
+             gestureScaleRatio = MIN_SCALE_RATIO;
+@@ -291,7 +293,7 @@
+      */
+     public void resetCanvas() {
+         gestureScaleRatio = 1.0f;
+-        cellController.recursiveResetCellBackground(rootCell);
++        cellController.recursiveClearCellHighLight(rootCell);
+         setScrollX(0);
+         setScrollY(0);
+         requestLayout();
+Index: app/src/main/java/com/bytemiracle/project/login/Register.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.project.login;\r\n\r\nimport android.os.Build;\r\nimport android.util.Log;\r\n\r\nimport androidx.annotation.RequiresApi;\r\n\r\nimport com.alibaba.fastjson.JSONObject;\r\nimport com.bytemiracle.base.framework.utils.ConstantsUtil;\r\nimport com.bytemiracle.base.framework.utils.EasySharedPreference;\r\nimport com.bytemiracle.base.framework.utils.FileUtil;\r\nimport com.bytemiracle.base.framework.utils.UniqueIdUtil;\r\nimport com.bytemiracle.project.common.FileLocalUtils;\r\nimport com.bytemiracle.project.contacts.bean.TimelyCommunicationDto;\r\nimport com.xuexiang.xhttp2.XHttp;\r\nimport com.xuexiang.xhttp2.callback.SimpleCallBack;\r\nimport com.xuexiang.xhttp2.exception.ApiException;\r\nimport com.xuexiang.xutil.XUtil;\r\n\r\nimport org.apache.commons.lang3.StringUtils;\r\n\r\nimport java.io.BufferedReader;\r\nimport java.io.File;\r\nimport java.io.FileReader;\r\nimport java.io.FileWriter;\r\nimport java.util.Base64;\r\nimport java.util.HashMap;\r\nimport java.util.Map;\r\n\r\nimport cn.wildfirechat.remote.ChatManager;\r\n\r\nimport static com.xuexiang.xutil.XUtil.getContext;\r\n\r\npublic class Register {\r\n\r\n    private static String TAG = Register.class.getName();\r\n    private static String licenseFile = FileLocalUtils.licPath;\r\n\r\n    private boolean[] flagCompletes = {false, false};\r\n\r\n    /**\r\n     * 判断license文件是否存在\r\n     *\r\n     * @return\r\n     */\r\n    public static boolean checkHiveLicenseFile() {\r\n        return FileUtil.fileIsExists(licenseFile);\r\n    }\r\n\r\n\r\n    @RequiresApi(api = Build.VERSION_CODES.O)\r\n    public static void genLicense(String key) {\r\n        // 删除授权目录下的文件\r\n        /*File dir = new File(licenseFile);\r\n        for(File file: dir.listFiles()){\r\n            file.delete();\r\n        }*/\r\n        try {\r\n            File lic = new File(licenseFile);\r\n            //创建父级文件夹\r\n            FileUtil.checkDir(lic.getParent());\r\n            // 创建文件\r\n            lic.createNewFile();\r\n            //Base64 加密\r\n            String encoded = Base64.getEncoder().encodeToString(licenseKey(key).getBytes());\r\n            // creates a FileWriter Object\r\n            FileWriter fwriter = new FileWriter(lic, false);\r\n            // 向文件写入内容\r\n            fwriter.write(encoded);\r\n            fwriter.flush();\r\n            fwriter.close();\r\n        } catch (Exception e) {\r\n            Log.e(TAG, e.toString());\r\n        }\r\n    }\r\n\r\n    /**\r\n     * 删除无效的license\r\n     */\r\n    public static void delLic() {\r\n        File dir = new File(licenseFile);\r\n        for (File file : dir.listFiles()) {\r\n            file.delete();\r\n        }\r\n    }\r\n\r\n    public static boolean verify(String key) {\r\n        File file = new File(licenseFile);\r\n        if (file.exists()) {\r\n            try {\r\n                StringBuilder sb = new StringBuilder();\r\n\r\n                //构造一个BufferedReader类来读取文件\r\n                BufferedReader br = new BufferedReader(new FileReader(file));\r\n                String str = null;\r\n                //使用readLine方法，一次读一行\r\n                while ((str = br.readLine()) != null) {\r\n                    sb.append(str);\r\n                }\r\n                br.close();\r\n                //Base64 解密\r\n                byte[] decoded = new byte[0];\r\n                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {\r\n                    decoded = Base64.getDecoder().decode(String.valueOf(sb));\r\n                }\r\n                if (licenseKey(key).equals(new String(decoded))) {\r\n                    return true;\r\n                } else {\r\n                    return false;\r\n                }\r\n            } catch (Exception e) {\r\n                Log.e(TAG, e.toString());\r\n                return false;\r\n            }\r\n        } else {\r\n            return false;\r\n        }\r\n    }\r\n\r\n    private static String licenseKey(String key) {\r\n        // MAC 地址\r\n        String mac = UniqueIdUtil.getDeviceId(getContext());\r\n        return mac + \";\" + key;\r\n    }\r\n\r\n    public Register() {\r\n\r\n    }\r\n\r\n    public void login(Map<String, Object> loginParams) {\r\n        XHttp.post(\"smart-server/app/login\").baseUrl(ConstantsUtil.SERVER_ADDRESS)\r\n                .params(loginParams)\r\n                .keepJson(true)\r\n                .execute(new SimpleCallBack<String>() {\r\n                    @Override\r\n                    public void onSuccess(String response) throws Throwable {\r\n\r\n                    }\r\n\r\n                    @Override\r\n                    public void onError(ApiException e) {\r\n\r\n                    }\r\n                });\r\n    }\r\n\r\n    //获取用户初始化信息\r\n    public void asyncGetUserInfo() {\r\n        HashMap<String, Object> initAddressBookParams = new HashMap() {\r\n            {\r\n                put(\"machineCode\", UniqueIdUtil.getDeviceId(XUtil.getContext()));\r\n                put(\"clientId\", ChatManager.Instance().getClientId());\r\n                put(\"platform\", 2);\r\n            }\r\n        };\r\n        XHttp.post(\"smart-server/app/addressBookInit\")\r\n                .baseUrl(ConstantsUtil.SERVER_ADDRESS)\r\n                .params(initAddressBookParams)\r\n                .keepJson(true)\r\n                .execute(new SimpleCallBack<String>() {\r\n                    @Override\r\n                    public void onSuccess(String response) {\r\n                        JSONObject responseJson = JSONObject.parseObject(response);\r\n                        if (responseJson.getInteger(\"code\") == 0) {\r\n                            String data = responseJson.getString(\"data\");\r\n                            if (StringUtils.isNotEmpty(data)) {\r\n                                TimelyCommunicationDto timelyCommunication = JSONObject.parseObject(data, TimelyCommunicationDto.class);\r\n                                if (timelyCommunication == null || StringUtils.isAnyEmpty(timelyCommunication.getId(), timelyCommunication.getToken())) {\r\n                                    EasySharedPreference.get().put(ConstantsUtil.APP_THIS_MACHINE_BIND_USER_STATUS, 1);\r\n                                } else {\r\n                                    EasySharedPreference.get().put(ConstantsUtil.APP_THIS_MACHINE_BIND_USER_STATUS, 0);\r\n                                    EasySharedPreference.get().putObject(ConstantsUtil.APP_THIS_MACHINE_BIND_USER_INFO, timelyCommunication);\r\n                                    EasySharedPreference.get().put(ConstantsUtil.APP_THIS_MACHINE_TOKEN, timelyCommunication.getToken());\r\n                                    EasySharedPreference.get().put(ConstantsUtil.APP_THIS_MACHINE_BIND_USER_ID, timelyCommunication.getId());\r\n                                    EasySharedPreference.get().put(ConstantsUtil.APP_THIS_MACHINE_BIND_USER_NICKNAME, timelyCommunication.getNickname());\r\n                                    EasySharedPreference.get().put(ConstantsUtil.APP_THIS_MACHINE_BIND_USER_MOBILE, timelyCommunication.getMobile());\r\n                                }\r\n                            }\r\n                        }\r\n                        if (responseJson.getInteger(\"code\") == 2) {\r\n                            //提示需要设备需要绑定用户\r\n                            EasySharedPreference.get().put(ConstantsUtil.APP_THIS_MACHINE_BIND_USER_STATUS, 1);\r\n                        }\r\n                    }\r\n\r\n                    @Override\r\n                    public void onError(ApiException e) {\r\n                        Log.i(\"MsgMonitorService\", \"及时通讯初始化异常\");\r\n                    }\r\n                });\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bytemiracle/project/login/Register.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/java/com/bytemiracle/project/login/Register.java	(date 1615354949172)
+@@ -185,7 +185,7 @@
+ 
+                     @Override
+                     public void onError(ApiException e) {
+-                        Log.i("MsgMonitorService", "及时通讯初始化异常");
++                        Log.i(TAG, "及时通讯初始化异常");
+                     }
+                 });
+     }
+Index: app/src/main/java/com/bytemiracle/project/login/MainPageFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.project.login;\r\n\r\nimport android.view.View;\r\nimport android.widget.AdapterView;\r\nimport android.widget.GridView;\r\n\r\nimport com.bytemiracle.base.framework.GlobalInstanceHolder;\r\nimport com.bytemiracle.base.framework.component.BaseActivity;\r\nimport com.bytemiracle.base.framework.fragment.BaseFragment;\r\nimport com.bytemiracle.base.framework.fragment.FragmentTag;\r\nimport com.bytemiracle.base.framework.preview.PreviewUtils;\r\nimport com.bytemiracle.base.framework.utils.ConstantsUtil;\r\nimport com.bytemiracle.base.framework.utils.EasySharedPreference;\r\nimport com.bytemiracle.base.framework.utils.XToastUtils;\r\nimport com.bytemiracle.project.AssistantApplication;\r\nimport com.bytemiracle.project.R;\r\nimport com.bytemiracle.project.contacts.ContactsActivity;\r\nimport com.bytemiracle.project.contacts.controller.ContactsPresenter;\r\nimport com.bytemiracle.project.main.MainActivity;\r\nimport com.bytemiracle.project.mindsemanteme.MindSemantemeActivity;\r\nimport com.bytemiracle.project.policyMessage.PolicyMessageActivity;\r\nimport com.bytemiracle.project.policyMessage.adapter.MainPageSimpleAdapter;\r\nimport com.bytemiracle.project.policyMessage.service.MsgMonitorService;\r\nimport com.bytemiracle.project.policyMessage.service.MsgService;\r\nimport com.bytemiracle.project.settings.SettingsActivity;\r\nimport com.bytemiracle.project.settings.presenter.AutoUpdatePresenter;\r\nimport com.xuexiang.xaop.util.ClickUtils;\r\nimport com.xuexiang.xui.utils.WidgetUtils;\r\nimport com.xuexiang.xui.widget.dialog.LoadingDialog;\r\n\r\nimport butterknife.BindView;\r\nimport cn.wildfirechat.client.ConnectionStatus;\r\nimport cn.wildfirechat.remote.ChatManager;\r\n\r\nimport static com.xuexiang.xutil.app.ServiceUtils.startService;\r\n\r\n/**\r\n * @author gwwang\r\n * @since 2021-02-23\r\n */\r\n@FragmentTag(name = \"主页面\", useSlide = true)\r\npublic class MainPageFragment extends BaseFragment {\r\n    //定义图标数组\r\n    private MainPageIcon[] mainPageIcons = {\r\n            new MainPageIcon(R.drawable.png1, MainActivity.class),\r\n            new MainPageIcon(R.drawable.png2, ContactsActivity.class),\r\n            new MainPageIcon(R.drawable.png3, PolicyMessageActivity.class),\r\n            new MainPageIcon(R.drawable.png4_dis, null),\r\n            new MainPageIcon(R.drawable.png5_dis, null),\r\n            new MainPageIcon(R.drawable.png6, MindSemantemeActivity.class),\r\n            new MainPageIcon(R.drawable.png7_dis, null),\r\n            new MainPageIcon(R.drawable.png8, SettingsActivity.class)};\r\n\r\n    @BindView(R.id.MyGridView)\r\n    GridView mGridView;\r\n\r\n    public LoadingDialog mLoadingDialog;\r\n\r\n    @Override\r\n    protected int getLayoutId() {\r\n        return R.layout.fragment_main_page;\r\n    }\r\n\r\n    @Override\r\n    protected void initViews() {\r\n        mLoadingDialog = WidgetUtils.getLoadingDialog(getContext()).setIconScale(0.4F).setLoadingSpeed(8);\r\n        mLoadingDialog.updateMessage(\"加载中……\");\r\n        MainPageSimpleAdapter adapter = new MainPageSimpleAdapter(getContext(), mainPageIcons);\r\n        mGridView.setAdapter(adapter);\r\n        //设置未读消息数\r\n        MsgService msgService = MsgService.getInstance();\r\n        adapter.setMsgCount(msgService.queryUnReadCount());\r\n\r\n        //为mGridView添加点击事件监听器\r\n        mGridView.setOnItemClickListener(this::clickItem);\r\n\r\n        //启动msg监控服务\r\n        startService(MsgMonitorService.class);\r\n\r\n        //检查升级\r\n        new AutoUpdatePresenter((BaseActivity) getActivity()).autoUpdate();\r\n    }\r\n\r\n    private void clickItem(AdapterView<?> adapterView, View view, int position, long l) {\r\n        if (!ClickUtils.isFastDoubleClick(mGridView, 500)) {\r\n            Class<? extends BaseActivity> activityClazz = mainPageIcons[position].activityClazz;\r\n            if (activityClazz == null) {\r\n                XToastUtils.info(\"该功能暂未上线\");\r\n                return;\r\n            } else if (activityClazz == ContactsActivity.class) {\r\n                openContactActivity();\r\n            } else {\r\n                PreviewUtils.openActivity(getActivity(), activityClazz);\r\n            }\r\n        }\r\n    }\r\n\r\n    private void openContactActivity() {\r\n        LoadingDialog mLoadingDialog = WidgetUtils.getLoadingDialog(getActivity()).setIconScale(0.4F).setLoadingSpeed(8);\r\n        mLoadingDialog.updateMessage(\"正在获取最新数据……\");\r\n        mLoadingDialog.setCancelable(true);\r\n        mLoadingDialog.show();\r\n        new ContactsPresenter().asyncGetContactsData(success -> {\r\n            mLoadingDialog.dismiss();\r\n            if (!success) {\r\n                XToastUtils.info(\"获取通讯录数据失败!\");\r\n                return;\r\n            }\r\n            //获取数据后，\r\n            //1.通知应用进行长连接\r\n            boolean isConnected = ChatManager.Instance().getConnectionStatus() == ConnectionStatus.ConnectionStatusConnected;\r\n            if (!isConnected) {\r\n                String token = EasySharedPreference.get().getString(ConstantsUtil.APP_THIS_MACHINE_TOKEN, null);\r\n                String userId = EasySharedPreference.get().getString(ConstantsUtil.APP_THIS_MACHINE_BIND_USER_ID, null);\r\n                ((AssistantApplication) GlobalInstanceHolder.applicationContext()).startIMConnect(userId, token);\r\n            }\r\n            //2.打开界面\r\n            PreviewUtils.openActivity(getActivity(), ContactsActivity.class);\r\n        });\r\n    }\r\n\r\n    @Override\r\n    public void onResume() {\r\n        super.onResume();\r\n        if (mLoadingDialog != null && mLoadingDialog.isLoading()) {\r\n            mLoadingDialog.dismiss();\r\n        }\r\n    }\r\n\r\n    public static class MainPageIcon {\r\n        public int iconRes;\r\n        public Class<? extends BaseActivity> activityClazz;\r\n\r\n        public MainPageIcon(int iconRes, Class<? extends BaseActivity> activityClazz) {\r\n            this.iconRes = iconRes;\r\n            this.activityClazz = activityClazz;\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bytemiracle/project/login/MainPageFragment.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/java/com/bytemiracle/project/login/MainPageFragment.java	(date 1615354497286)
+@@ -20,7 +20,7 @@
+ import com.bytemiracle.project.mindsemanteme.MindSemantemeActivity;
+ import com.bytemiracle.project.policyMessage.PolicyMessageActivity;
+ import com.bytemiracle.project.policyMessage.adapter.MainPageSimpleAdapter;
+-import com.bytemiracle.project.policyMessage.service.MsgMonitorService;
++import com.bytemiracle.project.policyMessage.service.ReceiveMQService;
+ import com.bytemiracle.project.policyMessage.service.MsgService;
+ import com.bytemiracle.project.settings.SettingsActivity;
+ import com.bytemiracle.project.settings.presenter.AutoUpdatePresenter;
+@@ -75,7 +75,7 @@
+         mGridView.setOnItemClickListener(this::clickItem);
+ 
+         //启动msg监控服务
+-        startService(MsgMonitorService.class);
++        startService(ReceiveMQService.class);
+ 
+         //检查升级
+         new AutoUpdatePresenter((BaseActivity) getActivity()).autoUpdate();
+Index: app/src/main/res/layout/relation_tree_cell_layout.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    android:layout_width=\"wrap_content\"\r\n    android:layout_height=\"wrap_content\"\r\n    android:background=\"@drawable/bg_cell_layout_green_radius_10\"\r\n    android:orientation=\"vertical\">\r\n\r\n    <TextView\r\n        android:id=\"@+id/cell_content\"\r\n        style=\"@style/common_app_content_text\"\r\n        android:layout_width=\"@dimen/dpx_160\"\r\n        android:layout_height=\"@dimen/dpx_60\"\r\n        android:layout_marginStart=\"@dimen/dpx_5\"\r\n        android:layout_marginEnd=\"@dimen/dpx_10\"\r\n        android:text=\"hello_demo\"\r\n        android:textColor=\"@color/app_common_bg_white\" />\r\n</LinearLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/relation_tree_cell_layout.xml	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/res/layout/relation_tree_cell_layout.xml	(date 1615357103202)
+@@ -2,7 +2,6 @@
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+-    android:background="@drawable/bg_cell_layout_green_radius_10"
+     android:orientation="vertical">
+ 
+     <TextView
+Index: app/src/main/java/com/bytemiracle/project/contacts/PersonRelationFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.project.contacts;\r\n\r\nimport android.view.View;\r\nimport android.widget.ImageButton;\r\nimport android.widget.TextView;\r\n\r\nimport androidx.fragment.app.Fragment;\r\n\r\nimport com.alibaba.fastjson.JSON;\r\nimport com.bytemiracle.base.framework.fragment.BaseFragment;\r\nimport com.bytemiracle.base.framework.fragment.FragmentTag;\r\nimport com.bytemiracle.base.framework.listener.CommonAsync4Listener;\r\nimport com.bytemiracle.base.framework.listener.CommonAsyncListener;\r\nimport com.bytemiracle.base.framework.utils.ConstantsUtil;\r\nimport com.bytemiracle.base.framework.utils.EasySharedPreference;\r\nimport com.bytemiracle.base.framework.utils.ListUtils;\r\nimport com.bytemiracle.base.framework.utils.XToastUtils;\r\nimport com.bytemiracle.base.framework.view.relationTree.CellRect;\r\nimport com.bytemiracle.base.framework.view.relationTree.RelationTreeLayout;\r\nimport com.bytemiracle.base.framework.view.search.AppSearchView;\r\nimport com.bytemiracle.project.R;\r\nimport com.bytemiracle.project.contacts.bean.DivisionEntity;\r\nimport com.bytemiracle.project.contacts.bean.OrgDeptEntity;\r\nimport com.bytemiracle.project.contacts.bean.OrgUserEntity;\r\nimport com.bytemiracle.project.contacts.controller.ContactsPresenter;\r\nimport com.bytemiracle.project.contacts.controller.RelationTreePresenter;\r\n\r\nimport java.util.List;\r\n\r\nimport butterknife.BindView;\r\n\r\n/**\r\n * 类功能：联系人关系界面\r\n *\r\n * @author gwwang\r\n * @date 2021/2/19 9:48\r\n */\r\n@FragmentTag(name = \"联系人关系\")\r\npublic class PersonRelationFragment extends BaseFragment {\r\n    private static final String TAG = \"PersonRelationTreeFragment\";\r\n    public static final String KEY_DIVISION_ENTITY = \"data\";\r\n\r\n    @BindView(R.id.tv_dept_name)\r\n    TextView tvDeptName;\r\n    @BindView(R.id.tv_dept_name_2)\r\n    TextView tvDeptName2;\r\n    @BindView(R.id.tv_dept_num)\r\n    TextView tvDeptNum;\r\n    @BindView(R.id.tree_view_dept)\r\n    RelationTreeLayout treeViewDept;\r\n    @BindView(R.id.search_view)\r\n    AppSearchView searchView;\r\n    @BindView(R.id.btn_reset)\r\n    ImageButton btnReset;\r\n\r\n    private List<OrgDeptEntity> orgDeptEntityList;\r\n    private CellRect rootCell;\r\n\r\n    @Override\r\n    protected int getLayoutId() {\r\n        return R.layout.fragment_person_relation;\r\n    }\r\n\r\n    @Override\r\n    protected void initArgs() {\r\n        String deptUserInfo = EasySharedPreference.get().getString(ConstantsUtil.APP_DEPT_USER_INFO, null);\r\n        orgDeptEntityList = JSON.parseArray(deptUserInfo, OrgDeptEntity.class);\r\n        if (getArguments() == null || ListUtils.isEmpty(orgDeptEntityList)) {\r\n            XToastUtils.info(\"数据出错,请重试!\");\r\n            popFragment(this.getClass());\r\n        }\r\n    }\r\n\r\n    public void initData(DivisionEntity entity) {\r\n        RelationTreePresenter relationTreePresenter = new RelationTreePresenter(orgDeptEntityList);\r\n        OrgDeptEntity deptData = relationTreePresenter.queryTreeDataById(entity.getId());\r\n        if (deptData == null) {\r\n            XToastUtils.info(\"人员数据未入库!\");\r\n            return;\r\n        }\r\n        rootCell = relationTreePresenter.buildTreeDataConstructor(deptData, R.layout.relation_tree_cell_layout);\r\n        treeViewDept.setCellData(rootCell, (CommonAsyncListener<OrgDeptEntity>) data -> {\r\n            if (ListUtils.isEmpty(data.getContactUsers())) {\r\n                XToastUtils.info(\"该数据未入库!\");\r\n                return;\r\n            }\r\n            switch2PersonDetailFragment(data.getCode(), data.getContactUsers().get(0));\r\n        }, data -> {\r\n            //滑动的时候，显示重置图标\r\n            btnReset.setVisibility(View.VISIBLE);\r\n        });\r\n        btnReset.setOnClickListener(v -> {\r\n            btnReset.setVisibility(View.GONE);\r\n            treeViewDept.resetCanvas();\r\n        });\r\n        btnReset.setVisibility(View.GONE);\r\n        tvDeptName.setText(entity.getName());\r\n        tvDeptName2.setText(deptData.getCode());\r\n        tvDeptNum.setText(relationTreePresenter.getPersonCount(deptData) + \"人\");\r\n    }\r\n\r\n    @Override\r\n    protected void initViews() {\r\n        DivisionEntity entity = (DivisionEntity) getArguments().getSerializable(KEY_DIVISION_ENTITY);\r\n        if (entity != null) {\r\n            initData(entity);\r\n        }\r\n        searchView.initPopListener(new CommonAsync4Listener<List<String>>() {\r\n            @Override\r\n            public List<String> getInitData() {\r\n                return new ContactsPresenter().buildCellTextList(rootCell);\r\n            }\r\n        }).setSearchListener(searchKey -> {\r\n            treeViewDept.setHighLightCell(searchKey);\r\n        });\r\n    }\r\n\r\n\r\n    private void switch2PersonDetailFragment(String userDeptName, OrgUserEntity userEntity) {\r\n        Fragment parentFragment = getParentFragment();\r\n        if (parentFragment instanceof ContactsFragment) {\r\n            ((ContactsFragment) parentFragment).switch2PersonDetailFragment(userDeptName, userEntity);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/bytemiracle/project/contacts/PersonRelationFragment.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ app/src/main/java/com/bytemiracle/project/contacts/PersonRelationFragment.java	(date 1615360081016)
+@@ -78,7 +78,10 @@
+             XToastUtils.info("人员数据未入库!");
+             return;
+         }
+-        rootCell = relationTreePresenter.buildTreeDataConstructor(deptData, R.layout.relation_tree_cell_layout);
++        //仅显示自己下面的联系人
++        String userId = EasySharedPreference.get().getString(ConstantsUtil.APP_THIS_MACHINE_BIND_USER_ID);
++        OrgDeptEntity childDeptData = relationTreePresenter.queryChildDeptData(deptData, userId);
++        rootCell = relationTreePresenter.buildTreeDataConstructor(childDeptData, R.layout.relation_tree_cell_layout);
+         treeViewDept.setCellData(rootCell, (CommonAsyncListener<OrgDeptEntity>) data -> {
+             if (ListUtils.isEmpty(data.getContactUsers())) {
+                 XToastUtils.info("该数据未入库!");
+@@ -95,8 +98,8 @@
+         });
+         btnReset.setVisibility(View.GONE);
+         tvDeptName.setText(entity.getName());
+-        tvDeptName2.setText(deptData.getCode());
+-        tvDeptNum.setText(relationTreePresenter.getPersonCount(deptData) + "人");
++        tvDeptName2.setText(childDeptData.getCode());
++        tvDeptNum.setText(relationTreePresenter.getPersonCount(childDeptData) + "人");
+     }
+ 
+     @Override
+Index: smart-base/src/main/java/com/bytemiracle/base/framework/view/relationTree/CellController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.bytemiracle.base.framework.view.relationTree;\r\n\r\nimport android.graphics.RectF;\r\nimport android.util.Pair;\r\nimport android.util.TypedValue;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\nimport android.widget.LinearLayout;\r\nimport android.widget.TextView;\r\n\r\nimport com.bytemiracle.base.R;\r\n\r\nimport java.util.List;\r\n\r\n/**\r\n * 类功能：TODO\r\n *\r\n * @author gwwang\r\n * @date 2021/2/8 11:44\r\n */\r\npublic class CellController {\r\n    private static final String TAG = \"CellController\";\r\n\r\n    private CellRect rootCell;\r\n\r\n    public CellController(CellRect rootCell) {\r\n        this.rootCell = rootCell;\r\n    }\r\n\r\n    public int getChildrenTotalHeight(CellRect parentCellRect, int childrenMargin) {\r\n        int childrenSize = parentCellRect.childCells.size();\r\n        return childrenSize * parentCellRect.bindView.getMeasuredHeight() + (childrenSize - 1) * childrenMargin;\r\n    }\r\n\r\n    public int getCenterY(CellRect cell) {\r\n        return (int) (cell.bindView.getY() + cell.bindView.getMeasuredHeight() / 2);\r\n    }\r\n\r\n    public int getRightX(CellRect cell) {\r\n        return (int) (cell.bindView.getX() + cell.bindView.getMeasuredWidth());\r\n    }\r\n\r\n    public void recursiveUpdateCollapseClipRect(CellRect cell) {\r\n        if (cell.hasChild()) {\r\n            cell.setCollapseClipRect(buildClipCollapseRect(cell));\r\n            for (CellRect childCell : cell.childCells) {\r\n                recursiveUpdateCollapseClipRect(childCell);\r\n            }\r\n        }\r\n    }\r\n\r\n    public void recursiveFindCellByText(CellRect cell, String highLightCellText, CellRect[] result) {\r\n        if (cell.contentText.equals(highLightCellText)) {\r\n            result[0] = cell;\r\n        }\r\n        if (cell.hasChild()) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                recursiveFindCellByText(childCell, highLightCellText, result);\r\n            }\r\n        }\r\n    }\r\n\r\n    public CellRect findCellByText(CellRect cell, String highLightCellText) {\r\n        CellRect[] result = new CellRect[1];\r\n        recursiveFindCellByText(cell, highLightCellText, result);\r\n        return result[0];\r\n    }\r\n\r\n    public void recursiveVisibleCellByCollapseState(CellRect cell) {\r\n        visibleChildren(cell, cell.isCollapse() ? View.GONE : View.VISIBLE);\r\n        if (cell.hasChild()) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                recursiveVisibleCellByCollapseState(childCell);\r\n            }\r\n        }\r\n    }\r\n\r\n    public void reTraversal(CellRect cell) {\r\n        cell.setTraversed(false);\r\n        if (cell.hasChild()) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                reTraversal(childCell);\r\n            }\r\n        }\r\n    }\r\n\r\n    private RectF buildClipCollapseRect(CellRect parentCell) {\r\n        int centerY = getCenterY(parentCell);\r\n        int rightX = getRightX(parentCell);\r\n        int centerX = rightX + RelationTreeLayout.horizontal_margin / 4;\r\n        int iconLeft = centerX - 2 * CanvasController.COLLAPSE_ICON_RADIUS;\r\n        int iconTop = centerY - 2 * CanvasController.COLLAPSE_ICON_RADIUS;\r\n        int iconRight = centerX + 2 * CanvasController.COLLAPSE_ICON_RADIUS;\r\n        int iconBottom = centerY + 2 * CanvasController.COLLAPSE_ICON_RADIUS;\r\n        return new RectF(iconLeft, iconTop, iconRight, iconBottom);\r\n    }\r\n\r\n    public void collapseCell(CellRect cell, RelationTreeLayout thisView) {\r\n        if (cell.isCollapse()) {\r\n            collapseOtherCells(cell);\r\n            cell.setCollapse(false);\r\n        } else {\r\n            recursiveCollapseChildren(cell);\r\n        }\r\n        thisView.requestLayout();\r\n    }\r\n\r\n    public void recursiveResizeCellByScale(CellRect cell, RectF childInitRect, float childInitTextSize, float gestureScaleRatio) {\r\n        TextView textContent = (TextView) cell.bindView.findViewById(R.id.cell_content);\r\n        //字体大小\r\n        textContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, childInitTextSize * gestureScaleRatio);\r\n        //控件宽高\r\n        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) textContent.getLayoutParams();\r\n        layoutParams.width = (int) (childInitRect.width() * gestureScaleRatio);\r\n        layoutParams.height = (int) (childInitRect.height() * gestureScaleRatio);\r\n        int margin = (int) (cell.bindView.getContext().getResources().getDimension(R.dimen.dpx_10) * gestureScaleRatio);\r\n        layoutParams.setMargins(margin, 0, margin, 0);\r\n        if (cell.hasChild()) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                recursiveResizeCellByScale(childCell, childInitRect, childInitTextSize, gestureScaleRatio);\r\n            }\r\n        }\r\n    }\r\n\r\n    public void recursiveCollapseChildren(CellRect cell) {\r\n        cell.setCollapse(true);\r\n        if (cell.hasChild()) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                recursiveCollapseChildren(childCell);\r\n            }\r\n        }\r\n    }\r\n\r\n    public void recursiveResetCellBackground(CellRect cell) {\r\n        cell.bindView.setBackgroundResource(cell.normalBgResId);\r\n        if (cell.hasChild()) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                recursiveResetCellBackground(childCell);\r\n            }\r\n        }\r\n    }\r\n\r\n    private void collapseOtherCells(CellRect cell) {\r\n        CellRect parent = cell.parent;\r\n        if (parent != null) {\r\n            for (CellRect childCell : parent.childCells) {\r\n                if (childCell != cell) {\r\n                    recursiveCollapseChildren(childCell);\r\n                }\r\n            }\r\n        }\r\n    }\r\n\r\n    public void recursiveBindCellViews(CellRect parent, List<CellRect> cells, RelationTreeLayout viewGroup) {\r\n        if (cells != null) {\r\n            for (CellRect cell : cells) {\r\n                bindCellView(cell, parent, viewGroup);\r\n                recursiveBindCellViews(cell, cell.childCells, viewGroup);\r\n            }\r\n        }\r\n    }\r\n\r\n    public void bindCellView(CellRect cell, CellRect parent, RelationTreeLayout viewGroup) {\r\n        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(-2, -2);\r\n        cell.bindView = View.inflate(viewGroup.getContext(), cell.layoutResId, null);\r\n        TextView tv = cell.bindView.findViewById(R.id.cell_content);\r\n        tv.setText(cell.contentText);\r\n        cell.parent = isRootNode(cell) ? null : parent;\r\n        viewGroup.addView(cell.bindView, layoutParams);\r\n    }\r\n\r\n    /**\r\n     * 获取下一个cell\r\n     * 顺序：从右 ---下  ---\"左\" ---左下\r\n     *\r\n     * @param cell\r\n     * @return\r\n     */\r\n    public Pair<CellRect, RecursiveDirection> getNextCell(CellRect cell) {\r\n        CellRect rightCell = findRightCell(0, cell.colIndex + 1, cell.childCells);\r\n        if (rightCell != null && !rightCell.isTraversed()) {\r\n            return new Pair<>(rightCell, RecursiveDirection.RIGHT);\r\n        }\r\n        CellRect bottomCell = findBottomCell(cell);\r\n        if (bottomCell != null && !bottomCell.isTraversed()) {\r\n            return new Pair<>(bottomCell, RecursiveDirection.BOTTOM);\r\n        }\r\n        CellRect leftBottomCell = findLeftBottomCell(cell);\r\n        if (leftBottomCell != null) {\r\n            return !leftBottomCell.isTraversed() ? new Pair<>(leftBottomCell, RecursiveDirection.LEFT_BOTTOM) : getNextCell(leftBottomCell);\r\n        }\r\n        return new Pair<>(rootCell, RecursiveDirection.OVER);\r\n    }\r\n\r\n    public CellRect findTopCell(CellRect cell) {\r\n        int topColIndex = cell.colIndex;\r\n        int topColRowIndex = cell.rowIndex - 1;\r\n        //左侧根节点\r\n        if (null != cell.parent && cell.parent.hasChild()) {\r\n            List<CellRect> currentColCells = cell.parent.childCells;\r\n            if (currentColCells != null) {\r\n                for (CellRect ele : currentColCells) {\r\n                    if (ele.colIndex == topColIndex && ele.rowIndex == topColRowIndex) {\r\n                        return ele;\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public CellRect findLeftBottomCell(CellRect cell) {\r\n        //左侧非根节点\r\n        if (null != cell.parent && cell.parent.parent != null) {\r\n            int lbColIndex = cell.colIndex - 1;\r\n            int lbColRowIndex = cell.parent.rowIndex + 1;\r\n            List<CellRect> leftCells = cell.parent.parent.childCells;\r\n            if (leftCells != null && leftCells.size() != 0) {\r\n                if (lbColRowIndex == leftCells.size()) {\r\n                    //已经是该列最后一个节点,返回末尾节点\r\n                    return leftCells.get(leftCells.size() - 1);\r\n                }\r\n                for (CellRect leftCell : leftCells) {\r\n                    if (leftCell.colIndex == lbColIndex && leftCell.rowIndex == lbColRowIndex) {\r\n                        return leftCell;\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public CellRect findBottomCell(CellRect cell) {\r\n        int rowIndex = cell.rowIndex + 1;\r\n        int colIndex = cell.colIndex;\r\n        if (null != cell.parent && cell.parent.childCells != null) {\r\n            for (CellRect childCell : cell.parent.childCells) {\r\n                if (childCell.colIndex == colIndex && childCell.rowIndex == rowIndex) {\r\n                    return childCell;\r\n                }\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public CellRect findRightCell(int rowIndex, int colIndex, List<CellRect> childList) {\r\n        if (childList != null) {\r\n            for (CellRect cellRect : childList) {\r\n                if (cellRect.rowIndex == rowIndex && cellRect.colIndex == colIndex) {\r\n                    return cellRect;\r\n                }\r\n            }\r\n        }\r\n        return null;\r\n    }\r\n\r\n    public void visibleChildren(CellRect cell, int visible) {\r\n        if (cell.hasChild()) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                childCell.bindView.setVisibility(visible);\r\n                visibleChildren(childCell, visible);\r\n            }\r\n        }\r\n    }\r\n\r\n    public boolean isRootNode(CellRect cell) {\r\n        return cell.colIndex == 0 && cell.rowIndex == 0;\r\n    }\r\n\r\n    public CellRect findClickCell(float x, float y) {\r\n        CellRect[] resultObject = new CellRect[1];\r\n        recursiveFindClickCell(rootCell, x, y, resultObject);\r\n        return resultObject[0];\r\n    }\r\n\r\n    private void recursiveFindClickCell(CellRect cell, float x, float y, CellRect[] resultObject) {\r\n        RectF clipRect = new RectF(cell.bindView.getLeft(), cell.bindView.getTop(), cell.bindView.getRight(), cell.bindView.getBottom());\r\n        if (clipRect != null && clipRect.contains(x, y) && cell.bindView.getVisibility() == View.VISIBLE) {\r\n            resultObject[0] = cell;\r\n        }\r\n        if (cell.childCells != null) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                recursiveFindClickCell(childCell, x, y, resultObject);\r\n            }\r\n        }\r\n    }\r\n\r\n    public CellRect findAttachCell(float x, float y) {\r\n        CellRect[] resultObject = new CellRect[1];\r\n        recursiveFindAttachCell(rootCell, x, y, resultObject);\r\n        return resultObject[0];\r\n    }\r\n\r\n    private void recursiveFindAttachCell(CellRect cell, float x, float y, CellRect[] resultObject) {\r\n        RectF clipRect = cell.getCollapseClipRect();\r\n        if (clipRect != null && clipRect.contains(x, y) && cell.bindView.getVisibility() == View.VISIBLE) {\r\n            resultObject[0] = cell;\r\n        }\r\n        if (cell.childCells != null) {\r\n            for (CellRect childCell : cell.childCells) {\r\n                recursiveFindAttachCell(childCell, x, y, resultObject);\r\n            }\r\n        }\r\n    }\r\n\r\n    public void openParentCollapse(CellRect cell) {\r\n        if (cell != null) {\r\n            if (cell.parent != null) {\r\n                cell.parent.setCollapse(false);\r\n            }\r\n            openParentCollapse(cell.parent);\r\n        }\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- smart-base/src/main/java/com/bytemiracle/base/framework/view/relationTree/CellController.java	(revision 58a30d903026a64da0f4964d5bf9ae72ce2d21ba)
++++ smart-base/src/main/java/com/bytemiracle/base/framework/view/relationTree/CellController.java	(date 1615360034936)
+@@ -131,11 +131,11 @@
+         }
+     }
+ 
+-    public void recursiveResetCellBackground(CellRect cell) {
+-        cell.bindView.setBackgroundResource(cell.normalBgResId);
++    public void recursiveClearCellHighLight(CellRect cell) {
++        CellRect.clearHighLight(cell);
+         if (cell.hasChild()) {
+             for (CellRect childCell : cell.childCells) {
+-                recursiveResetCellBackground(childCell);
++                recursiveClearCellHighLight(childCell);
+             }
+         }
+     }
+@@ -163,6 +163,7 @@
+     public void bindCellView(CellRect cell, CellRect parent, RelationTreeLayout viewGroup) {
+         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(-2, -2);
+         cell.bindView = View.inflate(viewGroup.getContext(), cell.layoutResId, null);
++        cell.bindView.setBackground(cell.backgroundDrawable);
+         TextView tv = cell.bindView.findViewById(R.id.cell_content);
+         tv.setText(cell.contentText);
+         cell.parent = isRootNode(cell) ? null : parent;

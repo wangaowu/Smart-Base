@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/app_common_sub_title_layout">
+
+    <TextView
+        android:id="@+id/tv_sub_title"
+        style="@style/app_login_bold_black"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="系统设置" />
+
+    <FrameLayout
+        android:id="@+id/fl_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
+
+        <Button
+            android:id="@+id/btn_right"
+            style="@style/app_14sp_white_text_blue_button"
+            android:text="返回" />
+
+        <ImageView
+            android:id="@+id/iv_right"
+            android:layout_width="@dimen/dpx_45"
+            android:layout_height="@dimen/dpx_45"
+            android:scaleType="fitXY" />
+
+    </FrameLayout>
+</RelativeLayout>

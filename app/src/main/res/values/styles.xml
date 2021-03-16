@@ -1,0 +1,49 @@
+<resources>
+    <!-- 拓展主题 theme. -->
+    <style name="XUITheme" parent="XUIBaseTheme">
+        <!--设置默认窗口的动画样式-->
+        <item name="android:windowAnimationStyle">@style/window_base_anim_style</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="XUITheme.Phone">
+        <!-- Customize your theme here. -->
+        <!-- <item name="colorPrimary">@color/colorPrimary</item>
+         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+         <item name="colorAccent">@color/colorAccent</item>-->
+        <item name="xui_actionbar_height">?actionBarSize</item>
+        <item name="android:windowBackground">@color/app_common_bg_white</item>
+        <item name="android:statusBarColor">@color/app_common_status_bar_color</item>
+    </style>
+
+    <style name="MapActivityTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/bg_window_map_startup</item>
+    </style>
+
+    <style name="AppTheme.Launch">
+        <item name="xui_config_color_splash_bg">@color/xui_config_color_white</item>
+        <item name="xui_config_app_logo_bottom">@dimen/xui_config_app_logo_bottom</item>
+        <item name="xui_config_company_logo_bottom">@dimen/xui_config_company_logo_bottom</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="bg_setting_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:src">@drawable/bg_settings</item>
+    </style>
+
+    <style name="TreeNodeStyleCustom">
+        <item name="android:paddingLeft">20dp</item>
+        <!--<item name="android:showDividers">middle</item>-->
+        <!--<item name="android:divider">@android:drawable/divider_horizontal_bright</item>-->
+    </style>
+
+    <style name="message_send_state_flag">
+        <item name="android:layout_width">@dimen/dpx_20</item>
+        <item name="android:layout_height">@dimen/dpx_20</item>
+        <item name="android:layout_marginLeft">@dimen/dpx_10</item>
+    </style>
+</resources>

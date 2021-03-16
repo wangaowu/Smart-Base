@@ -1,0 +1,15 @@
+<resources>
+    <string name="lab_cancel">取消</string>
+    <string name="lab_choice">选择</string>
+
+    <!--pageTools工具栏-->
+    <string name="tools_page_info_string">第 %1$d-%2$d 条</string>
+    <string name="tools_total_info_string">总共 %1$d 条</string>
+    <string name="tools_count_of_page_string">%1$d条/页</string>
+    <string name="tips_count_of_page">每页显示条目数</string>
+    <!--特殊符号"<"  ">"-->
+    <string name="symbol_right">&#062;</string>
+    <string name="symbol_left">&#060;</string>
+
+    <string name="tag_support_rtl_background">tag_rtl_background</string>
+</resources>

@@ -1,0 +1,326 @@
+<resources>
+
+    <style name="window_base_anim_style">
+        <item name="android:activityOpenEnterAnimation">@anim/push_fall_out</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@anim/anim_stay</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+    </style>
+
+    <!--白色主题样式，，注意每一项都不能少-->
+    <style name="picture.white.style" parent="XUITheme.Phone">
+        <!-- Customize your theme here. -->
+        <!--标题栏背景色-->
+        <item name="colorPrimary">@color/app_common_bg_white</item>
+        <!--状态栏背景色-->
+        <item name="colorPrimaryDark">@color/app_common_bg_white</item>
+        <!--是否改变图片列表界面状态栏字体颜色为黑色-->
+        <item name="picture.statusFontColor">true</item>
+        <!--返回键图标-->
+        <item name="picture.leftBack.icon">@drawable/ic_title_gray_back</item>
+        <!--标题下拉箭头-->
+        <item name="picture.arrow_down.icon">@drawable/picture_icon_arrow_down</item>
+        <!--标题上拉箭头-->
+        <item name="picture.arrow_up.icon">@drawable/picture_icon_arrow_up</item>
+        <!--标题文字颜色-->
+        <item name="picture.title.textColor">@color/app_content_text_gray_1_color</item>
+        <!--标题栏右边文字-->
+        <item name="picture.right.textColor">@color/app_content_text_gray_1_color</item>
+        <!--图片列表勾选样式-->
+        <item name="picture.checked.style">@drawable/picture_checkbox_num_selector</item>
+        <!--开启图片列表勾选数字模式,开启的话勾选样式要换-->
+        <item name="picture.style.checkNumMode">true</item>
+        <!--选择图片样式0/9-->
+        <item name="picture.style.numComplete">false</item>
+        <!--图片列表底部背景色-->
+        <item name="picture.bottom.bg">@color/white</item>
+        <!--图片列表预览文字颜色-->
+        <item name="picture.preview.textColor">@color/app_content_text_gray_1_color</item>
+        <!--图片列表已完成文字颜色-->
+        <item name="picture.complete.textColor">@color/app_content_text_gray_1_color</item>
+        <!--图片已选数量圆点背景色-->
+        <item name="picture.num.style">@drawable/picture_num_oval_blue</item>
+        <!--预览界面标题文字颜色-->
+        <item name="picture.ac_preview.title.textColor">@color/white</item>
+        <!--预览界面已完成文字颜色-->
+        <item name="picture.ac_preview.complete.textColor">@color/app_content_text_gray_1_color
+        </item>
+        <!--预览界面标题栏背景色-->
+        <item name="picture.ac_preview.title.bg">@color/app_common_bg_white</item>
+        <!--预览界面底部背景色-->
+        <item name="picture.ac_preview.bottom.bg">@color/white</item>
+        <!--预览界面返回箭头-->
+        <item name="picture.preview.leftBack.icon">@drawable/ic_title_gray_back</item>
+        <!--裁剪页面标题背景色-->
+        <item name="picture.crop.toolbar.bg">@color/app_common_bg_white</item>
+        <!--裁剪页面状态栏颜色-->
+        <item name="picture.crop.status.color">@color/app_common_bg_white</item>
+        <!--裁剪页面标题文字颜色-->
+        <item name="picture.crop.title.color">@color/white</item>
+        <!--相册文件夹列表选中图标-->
+        <item name="picture.folder_checked_dot">@drawable/picture_orange_oval</item>
+        <!--原图勾选样式-->
+        <item name="picture.original.check.style">@drawable/picture_original_blue_checkbox</item>
+        <!--原图字体颜色-->
+        <item name="picture.original.text.color">@color/picture_color_blue</item>
+        <!--相册目录文件夹字体颜色-->
+        <item name="picture.folder.textColor">@color/picture_color_4d</item>
+        <!--相册目录文件夹字体大小-->
+        <item name="picture.folder.textSize">16sp</item>
+        <!--相册背景底色-->
+        <item name="picture.container.backgroundColor">@color/picture_color_white</item>
+    </style>
+
+    <!--升级进度条样式-->
+    <style name="NumberProgressBar_Relax_Blue">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="progress_max">100</item>
+        <item name="progress_current">0</item>
+        <item name="progress_unreached_color">@color/gray_2_divider</item>
+        <item name="progress_reached_color">@color/app_common_bg_blue</item>
+        <item name="progress_text_size">@dimen/spx_12</item>
+        <item name="progress_text_color">@color/app_common_bg_blue</item>
+        <item name="progress_reached_bar_height">@dimen/divider_2dp_weight</item>
+        <item name="progress_unreached_bar_height">@dimen/divider_1dp_weight</item>
+    </style>
+
+    <!--按钮样式-->
+    <style name="app_round_10_blue_button" parent="RoundButton.Blue">
+        <item name="rb_backgroundColor">@color/app_common_bg_blue</item>
+        <item name="rb_radius">@dimen/dpx_10</item>
+    </style>
+    <!--********************************************************************字体类start***********************************************-->
+    <!--app应用内通用正文字体-->
+    <style name="common_app_content_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/spx_14</item>
+        <item name="android:textColor">@color/app_common_content_text_dark_333_color</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <!--app应用内通用标题1字体-->
+    <style name="common_app_title_text" parent="common_app_content_text">
+        <item name="android:textSize">@dimen/spx_20</item>
+    </style>
+    <!--app应用内通用标题2字体-->
+    <style name="common_app_sub_title_text" parent="common_app_content_text">
+        <item name="android:textSize">@dimen/spx_20</item>
+    </style>
+
+    <style name="common_text_gray_small_2" parent="common_app_content_text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">@dimen/dpx_5</item>
+        <item name="android:paddingBottom">@dimen/dpx_5</item>
+    </style>
+
+    <!--设置界面中带框的文本样式1-->
+    <style name="common_text_stroke_gray">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_gray_roundrect_stroke</item>
+        <item name="android:paddingLeft">@dimen/dpx_10</item>
+        <item name="android:paddingTop">@dimen/dpx_5</item>
+        <item name="android:paddingRight">@dimen/dpx_10</item>
+        <item name="android:paddingBottom">@dimen/dpx_5</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/app_common_content_text_dark_333_color</item>
+    </style>
+
+    <!--带透明黑色背景的文字样式-->
+    <style name="common_text_transparent_black">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/app_common_transparent_black</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/spx_14</item>
+        <item name="android:gravity">left|center_vertical</item>
+    </style>
+
+    <!--设置界面中带框的文本样式2-->
+    <style name="common_text_stroke_gray2" parent="common_text_stroke_gray">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_gray_roundrect_stroke</item>
+        <item name="android:paddingLeft">@dimen/dpx_15</item>
+        <item name="android:paddingTop">@dimen/dpx_10</item>
+        <item name="android:paddingRight">@dimen/dpx_15</item>
+        <item name="android:paddingBottom">@dimen/dpx_10</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:textColor">@color/app_common_content_text_dark_333_color</item>
+    </style>
+
+    <!--智能分析页面-->
+    <style name="common_text_3">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/spx_12</item>
+    </style>
+
+    <style name="common_text_4" parent="common_text_3">
+        <item name="android:textSize">@dimen/spx_14</item>
+    </style>
+    <!--智能分析页面-->
+
+    <style name="app_common_bold_1_black">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/app_component_title_text_color</item>
+        <item name="android:textSize">@dimen/text_size_back_bold_1</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="app_common_bold_2_black" parent="app_common_bold_1_black">
+        <item name="android:textSize">@dimen/text_size_back_bold_2</item>
+    </style>
+
+    <style name="app_common_bold_3_black" parent="app_common_bold_1_black">
+        <item name="android:textSize">@dimen/text_size_back_bold_3</item>
+    </style>
+
+    <!--登录页面黑粗字体-->
+    <style name="app_login_bold_black">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/app_component_title_text_color</item>
+        <item name="android:textSize">@dimen/spx_20</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!--应用内编辑多行文本样式-->
+    <style name="common_app_edit_content_text" parent="common_app_content_text">
+        <item name="android:background">@drawable/bg_app_common_input_radius_5_stroke_rectangle
+        </item>
+        <item name="android:gravity">top|left</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:paddingTop">@dimen/dpx_5</item>
+        <item name="android:paddingBottom">@dimen/dpx_5</item>
+    </style>
+    <!--应用内编辑单行文本样式-->
+    <style name="common_app_edit_single_line_text" parent="common_app_edit_content_text">
+        <item name="android:background">@drawable/bg_app_common_input_radius_5_stroke_rectangle
+        </item>
+        <item name="android:gravity">top|left</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:paddingTop">@dimen/dpx_5</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingBottom">@dimen/dpx_5</item>
+    </style>
+    <!--********************************************************************字体类end***********************************************-->
+
+    <!--********************************************************************按钮类start***********************************************-->
+
+    <!--应用内的圆形图片按钮-->
+    <style name="app_circle_image_button_style">
+        <item name="android:layout_width">@dimen/dpx_36</item>
+        <item name="android:layout_height">@dimen/dpx_36</item>
+    </style>
+
+    <!--应用内的16sp蓝色按钮-->
+    <style name="app_16sp_white_text_blue_button">
+        <item name="android:background">@drawable/bg_app_button_radius_25_blue_selector</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/spx_16</item>
+        <item name="android:layout_marginTop">@dimen/dpx_20</item>
+        <item name="android:layout_height">@dimen/dpx_40</item>
+        <item name="android:layout_width">@dimen/dpx_260</item>
+    </style>
+
+    <!--应用内的14sp蓝色按钮-->
+    <style name="app_14sp_white_text_blue_button" parent="app_16sp_white_text_blue_button">
+        <item name="android:background">@drawable/bg_app_button_radius_5_blue_selector</item>
+        <item name="android:textSize">@dimen/spx_14</item>
+        <item name="android:layout_marginTop">@dimen/dpx_zero</item>
+        <item name="android:layout_width">@dimen/dpx_96</item>
+        <item name="android:layout_height">@dimen/dpx_48</item>
+    </style>
+    <!--应用内的14sp蓝色按钮小-->
+    <style name="app_14sp_white_text_blue_small_button" parent="app_14sp_white_text_blue_button">
+        <item name="android:layout_width">@dimen/dpx_85</item>
+        <item name="android:layout_height">@dimen/dpx_30</item>
+    </style>
+    <!--应用内的14sp蓝字灰色按钮-->
+    <style name="app_14sp_blue_text_blue_button" parent="app_14sp_white_text_blue_button">
+        <item name="android:background">@drawable/bg_app_button_radius_5_stoke_blue_selector</item>
+        <item name="android:layout_width">@dimen/dpx_96</item>
+        <item name="android:layout_height">@dimen/dpx_48</item>
+        <item name="android:textColor">@color/app_common_bg_blue</item>
+    </style>
+    <!--应用内的14sp蓝字灰色按钮小-->
+    <style name="app_14sp_blue_text_blue_small_button" parent="app_14sp_blue_text_blue_button">
+        <item name="android:layout_width">@dimen/dpx_85</item>
+        <item name="android:layout_height">@dimen/dpx_30</item>
+    </style>
+    <!--应用内的12sp蓝色按钮-->
+    <style name="app_12sp_white_text_blue_button" parent="app_14sp_white_text_blue_button">
+        <item name="android:textSize">@dimen/spx_12</item>
+        <item name="android:layout_width">@dimen/dpx_85</item>
+        <item name="android:layout_height">@dimen/dpx_28</item>
+    </style>
+
+    <!--应用内通用浅灰选择器-->
+    <style name="app_common_gray_selector">
+        <item name="android:background">@drawable/bg_app_text_radius_5_white_selector</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">@dimen/dpx_10</item>
+        <item name="android:paddingEnd">@dimen/dpx_10</item>
+    </style>
+
+    <!--应用内蓝色文本白色按钮按钮-->
+    <style name="app_blue_text_white_button" parent="app_common_gray_selector">
+        <item name="android:textColor">@color/app_content_text_blue_color</item>
+        <item name="android:textSize">@dimen/spx_14</item>
+    </style>
+
+    <!--平板左侧第一列样式-->
+    <style name="app_common_left_0_panel">
+        <item name="android:layout_width">@dimen/dpx_left_0_panel_width</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/app_left_panel_blue_color</item>
+        <item name="android:paddingTop">@dimen/dpx_20</item>
+        <item name="vtl_indicator_color">@color/app_left_panel_blue_indicator_color</item>
+        <item name="vtl_indicator_gravity">fill</item>
+        <item name="vtl_tab_height">@dimen/dpx_left_panel_item_height</item>
+        <item name="vtl_tab_mode">scrollable</item>
+    </style>
+    <!--平板左侧第二列样式-->
+    <style name="app_common_left_1_panel">
+        <item name="android:layout_width">@dimen/dpx_220</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <!--右侧详情页面顶部副标题统一样式-->
+    <style name="app_common_sub_title_layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/dpx_settings_sub_title_height</item>
+        <item name="android:background">@color/app_common_sub_title_background_color</item>
+        <item name="android:paddingLeft">@dimen/dpx_settings_sub_title_hor_padding</item>
+        <item name="android:paddingRight">@dimen/dpx_settings_sub_title_hor_padding</item>
+    </style>
+
+    <!--im页面内消息条目容器样式-->
+    <style name="style_im_message_item_container_padding">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/dpx_10</item>
+        <item name="android:paddingTop">@dimen/dpx_5</item>
+        <item name="android:paddingRight">@dimen/dpx_10</item>
+        <item name="android:paddingBottom">@dimen/dpx_5</item>
+    </style>
+    <!--im页面内消息条目背景容器样式-->
+    <style name="style_im_message_item_stroke_background" parent="common_app_content_text">
+        <item name="android:background">@drawable/bg_gray_roundrect_2_dp_stroke</item>
+        <item name="android:maxWidth">@dimen/dpx_im_item_max_width</item>
+        <item name="android:paddingLeft">@dimen/dpx_10</item>
+        <item name="android:paddingTop">@dimen/dpx_5</item>
+        <item name="android:paddingRight">@dimen/dpx_10</item>
+        <item name="android:paddingBottom">@dimen/dpx_5</item>
+        <item name="android:tag">@string/tag_support_rtl_background</item>
+        <item name="android:layout_marginStart">@dimen/dpx_20</item>
+    </style>
+
+
+    <!--********************************************************************按钮类end***********************************************-->
+</resources>

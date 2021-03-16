@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MapBaseTool">
+        <attr name="IsChecked" format="boolean" />
+        <attr name="CheckedMode" format="boolean" />
+        <attr name="ShowText" format="boolean" />
+        <attr name="CheckedImg" format="reference" />
+        <attr name="UnCheckedImg" format="reference" />
+        <attr name="DisableImg" format="reference" />
+        <attr name="NormalColor" format="reference" />
+        <attr name="CheckedColor" format="reference" />
+        <attr name="DefaultTextColor" format="reference" />
+        <attr name="Text" format="string" />
+    </declare-styleable>
+</resources>
