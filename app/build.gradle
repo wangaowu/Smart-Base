@@ -60,7 +60,7 @@ android {
      */
     applicationVariants.all {
         outputs.each { output ->
-            def apkName = "assistant_v${it.versionName}_${it.buildType.name}_${generateTime()}.apk"
+            def apkName = "test_v${it.versionName}_${it.buildType.name}_${generateTime()}.apk"
             if (output.outputFile != null && output.outputFile.name.endsWith('.apk')) {
                 output.outputFileName = apkName
             }

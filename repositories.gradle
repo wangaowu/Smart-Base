@@ -5,16 +5,15 @@ static def addRepos(RepositoryHandler handler) {
     handler.mavenCentral()
     //Add the JitPack repository
     handler.maven { url "https://jitpack.io" }
-    handler.maven { url "https://dl.bintray.com/umsdk/release" }
     //Add the aliyun repository
-    handler.maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    handler.maven { url "https://maven.aliyun.com/repository/central" }
     handler.maven { url 'https://oss.sonatype.org/content/repositories/public' }
     //Add esri repository
     handler.maven { url 'https://esri.bintray.com/arcgis' }
     handler.maven { url 'https://esri.jfrog.io/artifactory/arcgis' }
     //localMaven
     handler.mavenLocal()
-    handler.maven { url "file:C:/Users/aa/.m2/repository/" }
+    handler.maven { url 'file://D:/localMaven/repository/' }
 }
 
 ext.addRepos = this.&addRepos

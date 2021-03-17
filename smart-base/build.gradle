@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.butterknife'
 apply from: '../x-library.gradle'
 //打pom包
-apply from: '../maven.gradle'
+apply from: '../upload.gradle'
 
 android {
     compileSdkVersion rootProject.extensions.ext.compileSdkVersion
