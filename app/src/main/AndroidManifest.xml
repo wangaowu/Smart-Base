@@ -43,8 +43,7 @@
         <activity
             android:name="com.bytemiracle.test.MainActivity"
             android:configChanges="screenSize|keyboardHidden|orientation|keyboard"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppTheme.Launch">
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

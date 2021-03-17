@@ -10,6 +10,7 @@
     <color name="app_common_content_text_light_gray_color">#C3C3C3</color>
     <color name="app_common_dark_red">#FF3333</color>
     <color name="app_common_orange_highlight">#F47920</color>
+    <color name="green_btn_color_disable">#CCCCCC</color>
 
     <color name="app_common_transparent_black">#66000104</color>
 

@@ -30,6 +30,8 @@ android {
         }
         packagingOptions {
             exclude 'com/itextpdf/text/pdf/fonts/cmap_info.txt'
+            exclude 'classes.dex'
+            exclude '**.**'
         }
     }
 
@@ -80,8 +82,9 @@ def generateTime() {
 }
 
 dependencies {
+    //api project(':smart-base')
     //依赖base
-    api 'com.bytemiracle.base:smart-base:1.0.1'
+    api 'com.bytemiracle.base:smart-base:1.0.4'
 }
 
 

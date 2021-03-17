@@ -23,8 +23,8 @@
     <com.xuexiang.xui.widget.textview.label.LabelTextView
         android:id="@+id/tv_move_left"
         style="@style/common_text_gray_small_2"
-        android:paddingLeft="@dimen/dp_5"
-        android:paddingRight="@dimen/dp_5"
+        android:paddingLeft="@dimen/dpx_5"
+        android:paddingRight="@dimen/dpx_5"
         android:text="@string/symbol_left" />
 
     <LinearLayout
@@ -36,18 +36,18 @@
     <com.xuexiang.xui.widget.textview.label.LabelTextView
         android:id="@+id/tv_move_right"
         style="@style/common_text_gray_small_2"
-        android:paddingLeft="@dimen/dp_5"
-        android:paddingRight="@dimen/dp_5"
+        android:paddingLeft="@dimen/dpx_5"
+        android:paddingRight="@dimen/dpx_5"
         android:text="@string/symbol_right" />
 
     <com.xuexiang.xui.widget.textview.label.LabelTextView
         android:id="@+id/tv_count_of_page"
         style="@style/common_text_gray_small_2"
         android:background="@drawable/bg_gray_roundrect_2_dp_stroke"
-        android:paddingLeft="@dimen/dp_5"
-        android:paddingTop="@dimen/dp_2"
-        android:paddingRight="@dimen/dp_5"
-        android:paddingBottom="@dimen/dp_2"
+        android:paddingLeft="@dimen/dpx_5"
+        android:paddingTop="@dimen/dpx_2"
+        android:paddingRight="@dimen/dpx_5"
+        android:paddingBottom="@dimen/dpx_2"
         android:text="20条/页" />
 
 </LinearLayout>

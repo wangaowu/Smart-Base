@@ -13,8 +13,8 @@ static def addRepos(RepositoryHandler handler) {
     handler.maven { url 'https://esri.bintray.com/arcgis' }
     handler.maven { url 'https://esri.jfrog.io/artifactory/arcgis' }
     //localMaven
-    handler.maven { url 'file:/D:/localMaven/repository' }
-    //handler.maven { url 'https://185.199.111.133/wanggaowu/maven/release/' }
+    handler.mavenLocal()
+    handler.maven { url "file:C:/Users/aa/.m2/repository/" }
 }
 
 ext.addRepos = this.&addRepos

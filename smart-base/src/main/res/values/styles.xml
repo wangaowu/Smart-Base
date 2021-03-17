@@ -1,4 +1,14 @@
 <resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="XUITheme.Phone">
+        <!-- Customize your theme here. -->
+        <!-- <item name="colorPrimary">@color/colorPrimary</item>
+         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+         <item name="colorAccent">@color/colorAccent</item>-->
+        <item name="xui_actionbar_height">?actionBarSize</item>
+        <item name="android:windowBackground">@color/app_common_bg_white</item>
+        <item name="android:statusBarColor">@color/app_common_status_bar_color</item>
+    </style>
 
     <style name="window_base_anim_style">
         <item name="android:activityOpenEnterAnimation">@anim/push_fall_out</item>

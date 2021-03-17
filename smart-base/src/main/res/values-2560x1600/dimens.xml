@@ -21,7 +21,9 @@
     <dimen name="dpx_370">370dp</dimen>
     <dimen name="dpx_230">230dp</dimen>
     <dimen name="dpx_260">260dp</dimen>
+    <dimen name="dpx_2">2dp</dimen>
     <dimen name="dpx_3">3dp</dimen>
+    <dimen name="dpx_4">4dp</dimen>
     <dimen name="dpx_8">8dp</dimen>
     <dimen name="dpx_40">40dp</dimen>
     <dimen name="dpx_90">90dp</dimen>
