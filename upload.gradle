@@ -7,6 +7,6 @@ uploadArchives {
         repository(url: uri('D:/localMaven/repository/'))
         pom.groupId = "com.bytemiracle.base"
         pom.artifactId = "smart-base"
-        pom.version = "1.0.4"
+        pom.version = "1.0.5"
     }
 }
