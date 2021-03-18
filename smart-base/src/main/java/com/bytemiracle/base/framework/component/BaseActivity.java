@@ -18,8 +18,8 @@ import com.bytemiracle.base.R;
 import com.bytemiracle.base.framework.fragment.AnnotationPresenter;
 import com.bytemiracle.base.framework.fragment.BaseFragment;
 import com.bytemiracle.base.framework.fragment.CoreFragmentManager;
-import com.bytemiracle.base.framework.utils.common.ListUtils;
 import com.bytemiracle.base.framework.utils.app.SoftKeyboardUtils;
+import com.bytemiracle.base.framework.utils.common.ListUtils;
 import com.bytemiracle.base.framework.view.ShadowLinearLayout;
 import com.bytemiracle.base.framework.view.apptitle.AppTitleController;
 import com.xuexiang.xui.utils.StatusBarUtils;
@@ -123,7 +123,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         View statusBarView = new View(this);
         // StatusBarUtils.getStatusBarHeight(this);
         statusBarView.setBackgroundColor(statusBarColor);
-        contentContainer.addView(statusBarView, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, STATUS_BAR_HEIGHT));
+        contentContainer.addView(statusBarView, 0, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, getStatusBarHeight()));
     }
 
     private ShadowLinearLayout initStatusBarStyle(int color) {
@@ -144,8 +144,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             appTitleController.ivBack.setOnClickListener(getLeftClickListener());
             appTitleController.tvTitle.setText(title);
             int dimensionPixelSize = getResources().getDimensionPixelSize(R.dimen.dpx_45);
-            appTitleController.wrapShadowEffect(contentContainer, dimensionPixelSize + STATUS_BAR_HEIGHT);
+            appTitleController.wrapShadowEffect(contentContainer, dimensionPixelSize + getStatusBarHeight());
         }
+    }
+
+    protected int getStatusBarHeight() {
+        return STATUS_BAR_HEIGHT;
     }
 
 

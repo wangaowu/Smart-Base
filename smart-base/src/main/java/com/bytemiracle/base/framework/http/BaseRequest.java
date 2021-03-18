@@ -2,8 +2,8 @@ package com.bytemiracle.base.framework.http;
 
 import com.bytemiracle.base.framework.GlobalInstanceHolder;
 import com.bytemiracle.base.framework.fragment.AnnotationPresenter;
-import com.bytemiracle.base.framework.utils.json.JsonParser;
 import com.bytemiracle.base.framework.utils.XToastUtils;
+import com.bytemiracle.base.framework.utils.json.JsonParser;
 import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.model.Response;
@@ -102,6 +102,8 @@ public class BaseRequest {
                 //没有网络
                 XToastUtils.info("请检查网络设置");
                 GlobalInstanceHolder.mainHandler().postDelayed(() -> resultListener.onFailed("请检查网络设置"), 1000);
+            } else {
+                GlobalInstanceHolder.mainHandler().post(() -> resultListener.onFailed(response.getException().getCause().getMessage()));
             }
         } catch (Exception e) {
             resultListener.onFailed(e.toString());
