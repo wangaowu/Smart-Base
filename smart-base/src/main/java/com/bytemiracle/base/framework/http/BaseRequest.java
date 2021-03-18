@@ -102,6 +102,11 @@ public class BaseRequest {
                 //没有网络
                 XToastUtils.info("请检查网络设置");
                 GlobalInstanceHolder.mainHandler().postDelayed(() -> resultListener.onFailed("请检查网络设置"), 1000);
+            } else if (causeReason.getName().contains("ConnectException")) {
+                //没有网络
+                XToastUtils.info("连接服务器失败");
+                GlobalInstanceHolder.mainHandler().postDelayed(() -> resultListener.onFailed("连接服务器失败"), 1000);
+
             } else {
                 GlobalInstanceHolder.mainHandler().post(() -> resultListener.onFailed(response.getException().getCause().getMessage()));
             }
