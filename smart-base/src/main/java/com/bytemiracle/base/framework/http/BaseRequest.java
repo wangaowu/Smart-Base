@@ -131,7 +131,11 @@ public class BaseRequest {
             resultListener.onSuccess(jsonBody);
         } else {
             //回调解析后的json数据
-            resultListener.onSuccess(JsonParser.fromJson(jsonBody, genType));
+            try {
+                resultListener.onSuccess(JsonParser.fromJson(jsonBody, genType));
+            } catch (Exception e) {
+                GlobalInstanceHolder.mainHandler().post(() -> resultListener.onFailed(e.getMessage()));
+            }
         }
     }
 }
