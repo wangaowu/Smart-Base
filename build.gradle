@@ -2,7 +2,7 @@ ext {
     compileSdkVersion = 28
     buildToolsVersion = '28.0.3'
     applicationId = "com.bytemiracle.project"
-    minSdkVersion = 21
+    minSdkVersion = 23
     targetSdkVersion = 28
     versionCode = 5
     versionName = "1.1.5"

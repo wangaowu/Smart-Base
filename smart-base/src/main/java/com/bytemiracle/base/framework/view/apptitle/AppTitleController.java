@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bytemiracle.base.R;
+import com.bytemiracle.base.framework.utils.image.BitmapWrapper;
 import com.bytemiracle.base.framework.view.ShadowLinearLayout;
 
 /**
@@ -60,5 +61,17 @@ public class AppTitleController {
             ShadowLinearLayout ll = (ShadowLinearLayout) linearLayout;
             ll.setShadowOn(R.drawable.bg_title_transparent_shadow, shadowVerticalPosition);
         }
+    }
+
+    public void resetBackgroundColor(int colorValue) {
+        contentView.setBackgroundColor(colorValue);
+    }
+
+    public void setNeedLight(boolean needLightTitleBarChild) {
+        int contentColor = context.getColor(needLightTitleBarChild ?
+                android.R.color.white :
+                R.color.app_common_content_text_dark_333_color);
+        tvTitle.setTextColor(contentColor);
+        BitmapWrapper.quickApply(ivBack, R.drawable.ic_title_gray_back, contentColor);
     }
 }

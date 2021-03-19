@@ -117,6 +117,24 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     /**
+     * 设置顶部状态栏颜色
+     *
+     * @return
+     */
+    protected int getStatusBarHeight() {
+        return STATUS_BAR_HEIGHT;
+    }
+
+    /**
+     * 高亮标题栏颜色
+     *
+     * @return
+     */
+    protected boolean needLightTitleBarChild() {
+        return false;
+    }
+
+    /**
      * 初始化顶部状态栏
      */
     private void addStatusBarColor(int statusBarColor) {
@@ -142,16 +160,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(title)) {
             appTitleController = new AppTitleController(this).insert2Parent((ViewGroup) contentContainer, 1);
             appTitleController.ivBack.setOnClickListener(getLeftClickListener());
+            appTitleController.resetBackgroundColor(getStatusBarColor());
+            appTitleController.setNeedLight(needLightTitleBarChild());
             appTitleController.tvTitle.setText(title);
             int dimensionPixelSize = getResources().getDimensionPixelSize(R.dimen.dpx_45);
             appTitleController.wrapShadowEffect(contentContainer, dimensionPixelSize + getStatusBarHeight());
         }
     }
-
-    protected int getStatusBarHeight() {
-        return STATUS_BAR_HEIGHT;
-    }
-
 
     public void updateTitleText(String titleText) {
         if (appTitleController != null) {

@@ -26,6 +26,7 @@
 
     <!--按钮背景颜色-->
     <color name="app_content_text_bg_pressed_color">#05000000</color>
+    <color name="app_content_text_bg_pressed_gray">#c1c1c1</color>
 
     <!--字体颜色-->
     <color name="app_component_title_text_color">#333333</color>
