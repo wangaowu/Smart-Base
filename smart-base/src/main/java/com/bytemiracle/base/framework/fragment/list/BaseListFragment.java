@@ -7,7 +7,6 @@ import com.bytemiracle.base.R;
 import com.bytemiracle.base.framework.fragment.BaseFragment;
 import com.bytemiracle.base.framework.fragment.list.adapter.BaseListAdapter;
 import com.bytemiracle.base.framework.fragment.list.adapter.holder.BaseListViewHolder;
-import com.bytemiracle.base.framework.listener.CommonAsyncListener;
 import com.yanzhenjie.recyclerview.SwipeRecyclerView;
 import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
 
@@ -19,7 +18,7 @@ import com.yanzhenjie.recyclerview.widget.DefaultItemDecoration;
  * @author gwwang
  * @date 2021/3/22 17:07
  */
-public abstract class BaseListFragment<H extends BaseListViewHolder<V>, V> extends BaseFragment {
+public abstract class BaseListFragment<V> extends BaseFragment implements BaseListAdapter.InitViewHolderListener<V> {
 
     protected SwipeRecyclerView rvContent;
     protected BaseListAdapter adapter;
@@ -32,17 +31,21 @@ public abstract class BaseListFragment<H extends BaseListViewHolder<V>, V> exten
     @Override
     protected void initViews() {
         rvContent = mRootView.findViewById(R.id.tv_content);
+        rvContent.setBackgroundColor(getContext().getColor(R.color.app_common_bg_white));
         //设置布局管理器
         rvContent.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         //设置分割线
-        int color = getContext().getColor(R.color.gray_2_divider);
-        DefaultItemDecoration defaultItemDecoration = new DefaultItemDecoration(color);
+        int dividerColor = getContext().getColor(R.color.gray_0_divider);
+        int dividerWeight = getContext().getResources().getDimensionPixelSize(R.dimen.divider_1dp_weight);
+        DefaultItemDecoration defaultItemDecoration = new DefaultItemDecoration(dividerColor, dividerWeight, dividerWeight);
         rvContent.addItemDecoration(defaultItemDecoration);
         //设置条目点击监听
-        rvContent.setAdapter(adapter = new BaseListAdapter(initViewHolder(), getItemClickListener()));
+        rvContent.setAdapter(adapter = new BaseListAdapter(this));
     }
 
-    protected abstract BaseListAdapter.InitViewHolderListener<H, V> initViewHolder();
+    @Override
+    public abstract int getItemLayoutId();
 
-    protected abstract CommonAsyncListener<V> getItemClickListener();
+    @Override
+    public abstract void bindViewHolder(BaseListViewHolder holder, int position, V t);
 }

@@ -21,15 +21,13 @@ import com.bumptech.glide.request.RequestOptions;
  * @author gwwang
  * @date 2021/2/4 15:23
  */
-public abstract class BaseListViewHolder<T> extends RecyclerView.ViewHolder {
+public class BaseListViewHolder<T> extends RecyclerView.ViewHolder {
     protected Context context;
 
     public BaseListViewHolder(@NonNull View itemView) {
         super(itemView);
         this.context = itemView.getContext();
     }
-
-    public abstract void bindItemData(T itemData);
 
     /**
      * 寻找控件

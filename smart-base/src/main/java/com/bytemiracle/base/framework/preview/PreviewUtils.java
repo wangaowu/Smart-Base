@@ -2,6 +2,7 @@ package com.bytemiracle.base.framework.preview;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
@@ -10,15 +11,16 @@ import androidx.fragment.app.Fragment;
 import com.bytemiracle.base.R;
 import com.bytemiracle.base.framework.component.BaseActivity;
 import com.bytemiracle.base.framework.utils.IMConfig;
+import com.bytemiracle.base.framework.utils.XToastUtils;
 import com.bytemiracle.base.framework.utils.file.FileUtil;
 import com.bytemiracle.base.framework.utils.file.MFileUtils;
-import com.bytemiracle.base.framework.utils.XToastUtils;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureMimeType;
 import com.xuexiang.xutil.XUtil;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * 类功能：预览工具
@@ -34,12 +36,26 @@ public class PreviewUtils {
      * @param activity
      * @param clazz
      */
-    public static void openActivity(Activity activity, Class<? extends BaseActivity> clazz) {
+    public static void openActivity(Activity activity, Class<? extends BaseActivity> clazz, String key, Serializable bundle) {
         ActivityOptionsCompat compat = ActivityOptionsCompat.makeCustomAnimation(
                 activity,
                 R.anim.push_fall_out,
                 R.anim.anim_stay);
-        ActivityCompat.startActivity(activity, new Intent(activity, clazz), compat.toBundle());
+        Intent intent = new Intent(activity, clazz);
+        if (!TextUtils.isEmpty(key)) {
+            intent.putExtra(key, bundle);
+        }
+        ActivityCompat.startActivity(activity, intent, compat.toBundle());
+    }
+
+    /**
+     * 打开界面
+     *
+     * @param activity
+     * @param clazz
+     */
+    public static void openActivity(Activity activity, Class<? extends BaseActivity> clazz) {
+        openActivity(activity, clazz, null, null);
     }
 
     /**
