@@ -27,6 +27,7 @@ public class ItemController {
     private void lockEditText(EditText editText, boolean locked) {
         editText.setFocusable(!locked);
         editText.setClickable(!locked);
+        editText.setFocusableInTouchMode(!locked);
     }
 
     private void lockView(View view, boolean locked) {
