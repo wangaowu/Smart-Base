@@ -26,6 +26,7 @@ public class AppTitleController {
     public TextView tvTitle;
     public Button btn;
     private View contentView;
+    private com.xuexiang.xui.widget.spinner.materialspinner.MaterialSpinner spinner;
 
     public AppTitleController(Context context) {
         this(context, context.getResources().getDimensionPixelSize(R.dimen.dpx_45));
@@ -42,6 +43,7 @@ public class AppTitleController {
         ivBack = contentView.findViewById(R.id.iv_back);
         tvTitle = contentView.findViewById(R.id.tv_title);
         btn = contentView.findViewById(R.id.btn);
+        spinner = contentView.findViewById(R.id.spinner);
     }
 
     public AppTitleController insert2Parent(ViewGroup viewGroup, int index) {
@@ -73,5 +75,13 @@ public class AppTitleController {
                 R.color.app_common_content_text_dark_333_color);
         tvTitle.setTextColor(contentColor);
         BitmapWrapper.quickApply(ivBack, R.drawable.ic_title_gray_back, contentColor);
+    }
+
+    public Button getRightButton() {
+        return btn;
+    }
+
+    public com.xuexiang.xui.widget.spinner.materialspinner.MaterialSpinner getRightSpinner() {
+        return spinner;
     }
 }

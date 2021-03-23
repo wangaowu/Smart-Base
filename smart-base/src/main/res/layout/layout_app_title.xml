@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_frame_layout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dpx_45"
@@ -31,13 +32,24 @@
     </LinearLayout>
 
     <Button
-        android:visibility="gone"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/dpx_20"
-        style="@style/app_12sp_white_text_blue_button"
         android:id="@+id/btn"
+        style="@style/app_12sp_white_text_blue_button"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dpx_20"
         android:text=""
-        android:layout_width="wrap_content"/>
+        android:visibility="gone" />
 
+    <com.xuexiang.xui.widget.spinner.materialspinner.MaterialSpinner
+        android:id="@+id/spinner"
+        style="@style/Material.SpinnerStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dpx_20"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        app:ms_arrow_tint="@color/app_content_text_blue_color" />
 </RelativeLayout>

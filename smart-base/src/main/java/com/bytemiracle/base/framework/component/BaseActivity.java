@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -23,6 +24,7 @@ import com.bytemiracle.base.framework.utils.common.ListUtils;
 import com.bytemiracle.base.framework.view.ShadowLinearLayout;
 import com.bytemiracle.base.framework.view.apptitle.AppTitleController;
 import com.xuexiang.xui.utils.StatusBarUtils;
+import com.xuexiang.xui.widget.spinner.materialspinner.MaterialSpinner;
 import com.xuexiang.xui.widget.tabbar.VerticalTabLayout;
 
 import java.util.List;
@@ -132,6 +134,24 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected boolean needLightTitleBarChild() {
         return false;
+    }
+
+    /**
+     * 获取右侧spinner控件
+     *
+     * @return
+     */
+    public MaterialSpinner getBarRightSpinner() {
+        return appTitleController.getRightSpinner();
+    }
+
+    /**
+     * 获取右侧按钮图标
+     *
+     * @return
+     */
+    public Button getBarRightButton() {
+        return appTitleController.getRightButton();
     }
 
     /**
