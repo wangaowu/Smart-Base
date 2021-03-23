@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dpx_70"
+    android:paddingStart="@dimen/dpx_20"
+    android:paddingTop="@dimen/dpx_8"
+    android:paddingEnd="@dimen/dpx_20"
+    android:paddingBottom="@dimen/dpx_8">
+
+    <TextView
+        android:id="@+id/tv_task_title"
+        style="@style/common_app_sub_title_text"
+        android:text="疑似违法用地" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/common_app_content_text"
+            android:text="任务来源:"
+            android:textColor="@color/app_common_content_text_light_gray_color" />
+
+        <TextView
+            android:id="@+id/tv_task_from"
+            style="@style/common_app_content_text"
+            android:layout_marginLeft="@dimen/dpx_5"
+            android:text="群众"
+            android:textColor="@color/app_common_content_text_light_gray_color" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/common_app_content_text"
+            android:text="指派时间:"
+            android:textColor="@color/app_common_content_text_light_gray_color" />
+
+        <TextView
+            android:id="@+id/tv_task_time"
+            style="@style/common_app_content_text"
+            android:layout_marginLeft="@dimen/dpx_5"
+            android:text="2021.03.21"
+            android:textColor="@color/app_common_content_text_light_gray_color" />
+
+    </LinearLayout>
+
+</RelativeLayout>

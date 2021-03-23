@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/dpx_20"
+    android:paddingTop="@dimen/dpx_8"
+    android:paddingEnd="@dimen/dpx_20"
+    android:paddingBottom="@dimen/dpx_8">
+
+    <TextView
+        android:id="@+id/tv_flag"
+        style="@style/common_app_content_text"
+        android:layout_centerVertical="true"
+        android:text="任务来源"
+        android:textColor="@color/app_common_content_text_light_gray_color" />
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dpx_35"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:textStyle="bold">
+
+        <RadioButton
+            android:layout_width="@dimen/dpx_90"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dpx_20"
+            android:button="@drawable/app_radio_selector"
+            android:text="是"
+            android:textColor="@color/app_common_content_text_dark_333_color" />
+
+        <RadioButton
+            android:layout_width="@dimen/dpx_90"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dpx_20"
+            android:button="@drawable/app_radio_selector"
+            android:text="否"
+            android:textColor="@color/app_common_content_text_dark_333_color" />
+    </RadioGroup>
+</RelativeLayout>
