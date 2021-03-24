@@ -56,6 +56,9 @@ public class ItemController {
     private void lockItem(boolean locked) {
         switch (itemType) {
             case CONTENT:
+                lockEditText(itemView.get().findViewById(R.id.et_content), locked);
+                //lockView(itemView.get().findViewById(R.id.btn_right), locked);
+                break;
             case MULTI_EDIT:
                 lockEditText(itemView.get().findViewById(R.id.et_content), locked);
                 break;
@@ -65,9 +68,6 @@ public class ItemController {
                 break;
             case RADIO_GROUP:
                 lockRadioGroup(itemView.get().findViewById(R.id.radio_group), locked);
-                break;
-            case BUTTON:
-                lockView(itemView.get().findViewById(R.id.button), locked);
                 break;
         }
     }

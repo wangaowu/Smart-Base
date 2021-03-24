@@ -1,6 +1,7 @@
 package com.bytemiracle.base.framework.fragment.dynamicitem;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,7 +49,11 @@ public class DynamicItemPresenter {
 
     private ItemController addButtonItem(ItemData itemData) {
         View itemView = View.inflate(context.get(), R.layout.item_button_layout, null);
-        addItem(itemView);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-1, -2);
+        layoutParams.topMargin = context.get().getResources().getDimensionPixelSize(
+                itemData.useSmallVerticalPadding ? R.dimen.dpx_10 : R.dimen.dpx_40);
+        layoutParams.bottomMargin = layoutParams.topMargin;
+        addItem(itemView, layoutParams);
         Button button = itemView.findViewById(R.id.button);
         button.setText(itemData.btnText);
         button.setOnClickListener(itemData.btnClickListener);
@@ -95,8 +100,12 @@ public class DynamicItemPresenter {
         addItem(itemView);
         TextView tvFlag = itemView.findViewById(R.id.tv_flag);
         EditText etContent = itemView.findViewById(R.id.et_content);
+        Button btnRight = itemView.findViewById(R.id.btn_right);
         tvFlag.setText(itemData.flagText);
         etContent.setText(itemData.content);
+        btnRight.setVisibility(TextUtils.isEmpty(itemData.btnText) ? View.GONE : View.VISIBLE);
+        btnRight.setOnClickListener(itemData.btnClickListener);
+        btnRight.setText(itemData.btnText);
         return new ItemController(itemView, itemData.itemType);
     }
 

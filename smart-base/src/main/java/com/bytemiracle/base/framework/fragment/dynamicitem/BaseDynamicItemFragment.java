@@ -23,6 +23,8 @@ public abstract class BaseDynamicItemFragment<V> extends BaseFragment {
     protected final List<ItemController> itemControllers = new ArrayList();
     private LinearLayout llContainer;
     private DynamicItemPresenter dynamicItemPresenter;
+    private View topMarginView;
+    private View parent;
 
     @Override
     protected int getLayoutId() {
@@ -32,6 +34,8 @@ public abstract class BaseDynamicItemFragment<V> extends BaseFragment {
     @Override
     protected void initViews() {
         llContainer = mRootView.findViewById(R.id.ll_container);
+        topMarginView = mRootView.findViewById(R.id.top_margin);
+        parent = mRootView.findViewById(R.id.parent);
         dynamicItemPresenter = new DynamicItemPresenter(llContainer);
     }
 
@@ -87,5 +91,12 @@ public abstract class BaseDynamicItemFragment<V> extends BaseFragment {
      */
     protected void addItem(View itemView, LinearLayout.LayoutParams layoutParams) {
         dynamicItemPresenter.addItem(itemView, layoutParams);
+    }
+
+    /**
+     * 隐藏topMargin布局
+     */
+    protected void goneTopMargin() {
+        topMarginView.setVisibility(View.GONE);
     }
 }

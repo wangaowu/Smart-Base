@@ -21,6 +21,7 @@ public class ItemData {
     public String btnText;
     public View.OnClickListener btnClickListener;
     public View.OnClickListener iconClickListener;
+    public boolean useSmallVerticalPadding;
 
     public ItemData(ItemType itemType, String flagText) {
         this.itemType = itemType;
@@ -38,6 +39,11 @@ public class ItemData {
 
     public ItemData buttonText(String btnText) {
         this.btnText = btnText;
+        return this;
+    }
+
+    public ItemData useSmallVerticalPadding(boolean useSmallVerticalPadding) {
+        this.useSmallVerticalPadding = useSmallVerticalPadding;
         return this;
     }
 

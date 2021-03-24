@@ -3,8 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:paddingTop="@dimen/dpx_40"
-    android:paddingBottom="@dimen/dpx_40"
     android:weightSum="2">
 
     <Button
