@@ -1,5 +1,7 @@
 package com.bytemiracle.base.framework.fragment.dynamicitem;
 
+import android.view.View;
+
 /**
  * 类功能：TODO:
  *
@@ -17,10 +19,16 @@ public class ItemData {
     public int centerIconResID;
     public String[] radioTexts;
     public String btnText;
+    public View.OnClickListener btnClickListener;
+    public View.OnClickListener iconClickListener;
 
     public ItemData(ItemType itemType, String flagText) {
         this.itemType = itemType;
         this.flagText = flagText;
+    }
+
+    public ItemData(ItemType itemType) {
+        this(itemType, "");
     }
 
     public ItemData content(String content) {
@@ -28,13 +36,23 @@ public class ItemData {
         return this;
     }
 
-    public ItemData rightButtonText(String btnText) {
+    public ItemData buttonText(String btnText) {
         this.btnText = btnText;
         return this;
     }
 
     public ItemData editHint(String editHint) {
         this.editHint = editHint;
+        return this;
+    }
+
+    public ItemData btnClickListener(View.OnClickListener btnClickListener) {
+        this.btnClickListener = btnClickListener;
+        return this;
+    }
+
+    public ItemData iconClickListener(View.OnClickListener iconClickListener) {
+        this.iconClickListener = iconClickListener;
         return this;
     }
 
@@ -64,6 +82,10 @@ public class ItemData {
         /**
          * 单选
          */
-        RADIO_GROUP
+        RADIO_GROUP,
+        /**
+         * 按钮
+         */
+        BUTTON
     }
 }

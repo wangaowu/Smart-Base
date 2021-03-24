@@ -1,31 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingStart="@dimen/dpx_20"
     android:paddingTop="@dimen/dpx_8"
     android:paddingEnd="@dimen/dpx_20"
-    android:paddingBottom="@dimen/dpx_8">
+    android:paddingBottom="@dimen/dpx_8"
+    android:weightSum="10">
 
     <TextView
         android:id="@+id/tv_flag"
         style="@style/common_app_content_text"
-        android:layout_centerVertical="true"
+        android:layout_width="@dimen/default_width_use_weight"
+        android:layout_weight="4"
+        android:gravity="center_vertical|left"
+        android:paddingStart="@dimen/dpx_20"
         android:text="疑似违法范围定位"
         android:textColor="@color/app_common_content_text_light_gray_color" />
 
-    <ImageView
-        android:id="@+id/iv_center_icon"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="@dimen/default_width_use_weight"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_weight="6"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/dpx_20">
 
-    <Button
-        android:id="@+id/btn_right"
-        style="@style/app_14sp_white_text_blue_small_button"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:text="继续巡查" />
+        <ImageView
+            android:id="@+id/iv_center_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-</RelativeLayout>
+        <Space
+            android:layout_width="@dimen/default_width_use_weight"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btn_right"
+            style="@style/app_14sp_white_text_blue_small_button"
+            android:layout_alignParentEnd="true"
+            android:text="继续巡查" />
+
+    </LinearLayout>
+</LinearLayout>

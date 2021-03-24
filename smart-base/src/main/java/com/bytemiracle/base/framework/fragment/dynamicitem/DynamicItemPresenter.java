@@ -40,8 +40,19 @@ public class DynamicItemPresenter {
                 return addMultiEditItem(itemData);
             case RADIO_GROUP:
                 return addRadioGroupItem(itemData);
+            case BUTTON:
+                return addButtonItem(itemData);
         }
         return addContentItem(itemData);
+    }
+
+    private ItemController addButtonItem(ItemData itemData) {
+        View itemView = View.inflate(context.get(), R.layout.item_button_layout, null);
+        addItem(itemView);
+        Button button = itemView.findViewById(R.id.button);
+        button.setText(itemData.btnText);
+        button.setOnClickListener(itemData.btnClickListener);
+        return new ItemController(itemView, itemData.itemType);
     }
 
     private ItemController addRadioGroupItem(ItemData itemData) {
@@ -73,7 +84,9 @@ public class DynamicItemPresenter {
         Button btnRight = itemView.findViewById(R.id.btn_right);
         tvFlag.setText(itemData.flagText);
         ivCenterIcon.setImageResource(itemData.centerIconResID);
+        ivCenterIcon.setOnClickListener(itemData.iconClickListener);
         btnRight.setText(itemData.btnText);
+        btnRight.setOnClickListener(itemData.btnClickListener);
         return new ItemController(itemView, itemData.itemType);
     }
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingTop="@dimen/dpx_40"
+    android:paddingBottom="@dimen/dpx_40"
+    android:weightSum="2">
+
+    <Button
+        android:id="@+id/button"
+        style="@style/app_14sp_white_text_blue_button"
+        android:layout_width="@dimen/default_width_use_weight"
+        android:layout_weight="1"
+        android:text="test" />
+
+</LinearLayout>

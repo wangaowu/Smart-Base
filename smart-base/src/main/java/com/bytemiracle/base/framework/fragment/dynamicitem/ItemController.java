@@ -66,6 +66,9 @@ public class ItemController {
             case RADIO_GROUP:
                 lockRadioGroup(itemView.get().findViewById(R.id.radio_group), locked);
                 break;
+            case BUTTON:
+                lockView(itemView.get().findViewById(R.id.button), locked);
+                break;
         }
     }
 }
