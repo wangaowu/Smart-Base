@@ -64,7 +64,7 @@ public class BottomTabLayout extends LinearLayout {
                 TextView textView = cell.findViewById(R.id.tv_content);
                 ImageView iv = cell.findViewById(R.id.iv);
                 cell.setOnClickListener(v -> {
-                    checkCell(cell, tab, onTabCheckedListener);
+                    checkCell(cell, tab, tabs, onTabCheckedListener);
                 });
                 textView.setText(tab.text);
                 iv.setImageResource(tab.bottomDrawableResId);
@@ -72,20 +72,20 @@ public class BottomTabLayout extends LinearLayout {
             }
         }
         //默认选中第一个
-        checkCell(getChildAt(0), tabs.get(0), onTabCheckedListener);
+        checkCell(getChildAt(0), tabs.get(0), tabs, onTabCheckedListener);
     }
 
-    private void checkCell(View cell, Pojo tab, OnTabCheckChangedListener onTabClickListener) {
+    private void checkCell(View cell, Pojo tab, List<Pojo> tabs, OnTabCheckChangedListener onTabClickListener) {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             TextView textView = child.findViewById(R.id.tv_content);
             ImageView iv = child.findViewById(R.id.iv);
             if (cell == child) {
                 textView.setTextColor(FOCUS_COLOR_VALUE);
-                BitmapWrapper.quickApply(iv, tab.bottomDrawableResId, FOCUS_COLOR_VALUE);
+                BitmapWrapper.quickApply(iv, tabs.get(i).bottomDrawableResId, FOCUS_COLOR_VALUE);
             } else {
                 textView.setTextColor(NORMAL_COLOR_VALUE);
-                BitmapWrapper.quickApply(iv, tab.bottomDrawableResId, NORMAL_COLOR_VALUE);
+                BitmapWrapper.quickApply(iv, tabs.get(i).bottomDrawableResId, NORMAL_COLOR_VALUE);
             }
         }
         onTabClickListener.onTabChecked(tab);
@@ -99,6 +99,7 @@ public class BottomTabLayout extends LinearLayout {
         public int bottomDrawableResId;
         public String text;
         private Class<? extends BaseFragment> fragmentClazz;
+        private Object bundle;
 
         public Pojo(int bottomDrawableResId, String text, Class<? extends BaseFragment> fragmentClazz) {
             this.bottomDrawableResId = bottomDrawableResId;
@@ -112,6 +113,14 @@ public class BottomTabLayout extends LinearLayout {
 
         public void setFragment(Class<? extends BaseFragment> fragmentClazz) {
             this.fragmentClazz = fragmentClazz;
+        }
+
+        public Object getBundle() {
+            return bundle;
+        }
+
+        public void setBundle(Object bundle) {
+            this.bundle = bundle;
         }
     }
 }
